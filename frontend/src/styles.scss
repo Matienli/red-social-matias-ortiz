@@ -296,6 +296,48 @@ textarea {
   resize: vertical;
 }
 
+.password-field {
+  position: relative;
+  width: 100%;
+
+  input {
+    padding-right: 2.75rem;
+  }
+}
+
+.password-field__toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: var(--color-text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(6, 182, 212, 0.45);
+    outline-offset: 2px;
+  }
+
+  .icon {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+}
+
 .form-error {
   margin: 0;
   font-size: 0.8rem;

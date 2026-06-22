@@ -72,6 +72,8 @@ export class Registro {
   loading = false;
   imagenPreview: string | null = null;
   imagenArchivo: File | null = null;
+  mostrarContrasena = false;
+  mostrarRepetirContrasena = false;
 
   readonly perfiles: { value: PerfilUsuario; label: string }[] = [
     { value: 'usuario', label: 'Usuario' },

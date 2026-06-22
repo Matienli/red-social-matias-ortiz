@@ -23,6 +23,7 @@ export class Login {
 
   readonly submitted = { value: false };
   loading = false;
+  mostrarContrasena = false;
 
   readonly form = this.fb.nonNullable.group({
     identificador: ['', [Validators.required, Validators.minLength(3)]],

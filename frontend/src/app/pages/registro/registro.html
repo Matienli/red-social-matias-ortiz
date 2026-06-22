@@ -80,13 +80,35 @@
       <div class="form-grid form-grid--two">
         <div class="form-field">
           <label for="contrasena">Contraseña</label>
-          <input
-            id="contrasena"
-            type="password"
-            formControlName="contrasena"
-            [class.invalid]="isInvalid('contrasena')"
-            autocomplete="new-password"
-          />
+          <div class="password-field">
+            <input
+              id="contrasena"
+              [type]="mostrarContrasena ? 'text' : 'password'"
+              formControlName="contrasena"
+              [class.invalid]="isInvalid('contrasena')"
+              autocomplete="new-password"
+            />
+            <button
+              type="button"
+              class="password-field__toggle"
+              (click)="mostrarContrasena = !mostrarContrasena"
+              [attr.aria-label]="mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              [attr.aria-pressed]="mostrarContrasena"
+            >
+              @if (mostrarContrasena) {
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M6.7 6.7C4.6 8.2 3 10 2 12c2 4 6 7 10 7 1.5 0 2.9-.4 4.2-1M9.9 5.1A10.8 10.8 0 0 1 12 5c4 0 8 3 10 7-1 2-2.4 3.8-4.2 5.2"
+                  />
+                </svg>
+              } @else {
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              }
+            </button>
+          </div>
           @if (isInvalid('contrasena')) {
             <p class="form-error">
               {{ getPasswordErrorMessage(form.get('contrasena')?.errors ?? null) }}
@@ -96,13 +118,35 @@
 
         <div class="form-field">
           <label for="repetirContrasena">Repetir contraseña</label>
-          <input
-            id="repetirContrasena"
-            type="password"
-            formControlName="repetirContrasena"
-            [class.invalid]="isInvalid('repetirContrasena') || hasPasswordMismatch()"
-            autocomplete="new-password"
-          />
+          <div class="password-field">
+            <input
+              id="repetirContrasena"
+              [type]="mostrarRepetirContrasena ? 'text' : 'password'"
+              formControlName="repetirContrasena"
+              [class.invalid]="isInvalid('repetirContrasena') || hasPasswordMismatch()"
+              autocomplete="new-password"
+            />
+            <button
+              type="button"
+              class="password-field__toggle"
+              (click)="mostrarRepetirContrasena = !mostrarRepetirContrasena"
+              [attr.aria-label]="mostrarRepetirContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              [attr.aria-pressed]="mostrarRepetirContrasena"
+            >
+              @if (mostrarRepetirContrasena) {
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M6.7 6.7C4.6 8.2 3 10 2 12c2 4 6 7 10 7 1.5 0 2.9-.4 4.2-1M9.9 5.1A10.8 10.8 0 0 1 12 5c4 0 8 3 10 7-1 2-2.4 3.8-4.2 5.2"
+                  />
+                </svg>
+              } @else {
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              }
+            </button>
+          </div>
           @if (isInvalid('repetirContrasena')) {
             <p class="form-error">{{ getFieldError('repetirContrasena') }}</p>
           }
