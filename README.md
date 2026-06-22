@@ -44,7 +44,7 @@
 
 ## Sprints
 
-### Sprint 1 — Autenticación y base del proyecto ✅
+### Sprint 1 — Autenticación y base del proyecto
 
 **Frontend**
 - Proyecto Angular con routing y diseño minimalista expresivo
