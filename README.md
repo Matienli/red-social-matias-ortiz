@@ -13,7 +13,7 @@
 | **Frontend** | https://red-social-matias-ortiz.vercel.app |
 | **Backend (API)** | https://red-social-matias-ortiz.onrender.com/api |
 
-Rama desplegada: `sprint-1`
+Rama de desarrollo: `sprint-1` → merge a `main` vía Pull Request
 
 ---
 
