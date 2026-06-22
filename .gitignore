@@ -1,0 +1,29 @@
+# Dependencias (se reinstalan con npm install)
+node_modules/
+
+# Builds generados
+dist/
+.angular/
+out-tsc/
+tmp/
+
+# Secretos — nunca subir
+.env
+.env.local
+.env.*.local
+
+# Uploads locales viejos (las imágenes van a Cloudinary)
+backend/uploads/
+
+# Logs y cache
+*.log
+npm-debug.log*
+.sass-cache/
+coverage/
+
+# IDE y sistema
+.idea/
+.vscode/
+.history/
+.DS_Store
+Thumbs.db

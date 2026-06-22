@@ -1,0 +1,59 @@
+<app-navbar />
+<div class="auth-layout">
+  <div class="card">
+    <div class="card__header">
+      <div class="card__icon" aria-hidden="true">
+        <svg class="icon" viewBox="0 0 24 24" style="width: 24px; height: 24px">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+          <path d="M10 17l5-5-5-5" />
+          <path d="M15 12H3" />
+        </svg>
+      </div>
+      <h1 class="card__title">Iniciar sesión</h1>
+      <p class="card__subtitle">Ingresá con tu correo o nombre de usuario</p>
+    </div>
+
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-field">
+        <label for="identificador">Correo o nombre de usuario</label>
+        <input
+          id="identificador"
+          type="text"
+          formControlName="identificador"
+          placeholder="ej: maria@mail.com o maria_gomez"
+          [class.invalid]="isInvalid('identificador')"
+          autocomplete="username"
+        />
+        @if (isInvalid('identificador')) {
+          <p class="form-error">{{ getIdentificadorError() }}</p>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="contrasena">Contraseña</label>
+        <input
+          id="contrasena"
+          type="password"
+          formControlName="contrasena"
+          placeholder="Mín. 8 caracteres, 1 mayúscula y 1 número"
+          [class.invalid]="isInvalid('contrasena')"
+          autocomplete="current-password"
+        />
+        @if (isInvalid('contrasena')) {
+          <p class="form-error">
+            {{ getPasswordErrorMessage(form.get('contrasena')?.errors ?? null) }}
+          </p>
+        }
+      </div>
+
+      <button class="btn btn-primary" type="submit" [disabled]="loading">
+        {{ loading ? 'Ingresando...' : 'Ingresar' }}
+      </button>
+    </form>
+
+    <p class="form-footer">
+      ¿No tenés cuenta?
+      <a routerLink="/registro">Registrate acá</a>
+    </p>
+  </div>
+</div>

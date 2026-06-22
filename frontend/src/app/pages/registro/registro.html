@@ -1,0 +1,183 @@
+<app-navbar />
+<div class="auth-layout">
+  <div class="card card--wide">
+    <div class="card__header">
+      <div class="card__icon" aria-hidden="true">
+        <svg class="icon" viewBox="0 0 24 24" style="width: 24px; height: 24px">
+          <circle cx="10" cy="8" r="4" />
+          <path d="M3 20c1.8-4 4.5-6 7-6" />
+          <path d="M19 11v6" />
+          <path d="M16 14h6" />
+        </svg>
+      </div>
+      <h1 class="card__title">Crear cuenta</h1>
+      <p class="card__subtitle">Completá tus datos para unirte a la red social</p>
+    </div>
+
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-grid form-grid--two">
+        <div class="form-field">
+          <label for="nombre">Nombre</label>
+          <input
+            id="nombre"
+            type="text"
+            formControlName="nombre"
+            [class.invalid]="isInvalid('nombre')"
+            autocomplete="given-name"
+          />
+          @if (isInvalid('nombre')) {
+            <p class="form-error">{{ getFieldError('nombre') }}</p>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="apellido">Apellido</label>
+          <input
+            id="apellido"
+            type="text"
+            formControlName="apellido"
+            [class.invalid]="isInvalid('apellido')"
+            autocomplete="family-name"
+          />
+          @if (isInvalid('apellido')) {
+            <p class="form-error">{{ getFieldError('apellido') }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="form-grid form-grid--two">
+        <div class="form-field">
+          <label for="correo">Correo electrónico</label>
+          <input
+            id="correo"
+            type="email"
+            formControlName="correo"
+            placeholder="tu@correo.com"
+            [class.invalid]="isInvalid('correo')"
+            autocomplete="email"
+          />
+          @if (isInvalid('correo')) {
+            <p class="form-error">{{ getFieldError('correo') }}</p>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="nombreUsuario">Nombre de usuario</label>
+          <input
+            id="nombreUsuario"
+            type="text"
+            formControlName="nombreUsuario"
+            placeholder="ej: maria.gomez o maria_gomez"
+            [class.invalid]="isInvalid('nombreUsuario')"
+            autocomplete="username"
+          />
+          @if (isInvalid('nombreUsuario')) {
+            <p class="form-error">{{ getFieldError('nombreUsuario') }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="form-grid form-grid--two">
+        <div class="form-field">
+          <label for="contrasena">Contraseña</label>
+          <input
+            id="contrasena"
+            type="password"
+            formControlName="contrasena"
+            [class.invalid]="isInvalid('contrasena')"
+            autocomplete="new-password"
+          />
+          @if (isInvalid('contrasena')) {
+            <p class="form-error">
+              {{ getPasswordErrorMessage(form.get('contrasena')?.errors ?? null) }}
+            </p>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="repetirContrasena">Repetir contraseña</label>
+          <input
+            id="repetirContrasena"
+            type="password"
+            formControlName="repetirContrasena"
+            [class.invalid]="isInvalid('repetirContrasena') || hasPasswordMismatch()"
+            autocomplete="new-password"
+          />
+          @if (isInvalid('repetirContrasena')) {
+            <p class="form-error">{{ getFieldError('repetirContrasena') }}</p>
+          }
+          @if (hasPasswordMismatch()) {
+            <p class="form-error">Las contraseñas no coinciden.</p>
+          }
+        </div>
+      </div>
+
+      <div class="form-grid form-grid--two">
+        <div class="form-field">
+          <label for="fechaNacimiento">Fecha de nacimiento</label>
+          <input
+            id="fechaNacimiento"
+            type="text"
+            formControlName="fechaNacimiento"
+            placeholder="dd/mm/aaaa"
+            inputmode="numeric"
+            maxlength="10"
+            autocomplete="bday"
+            (input)="onFechaNacimientoInput($event)"
+            [class.invalid]="isInvalid('fechaNacimiento')"
+          />
+          <p class="form-hint">Formato: día/mes/año (ej: 17/06/2000)</p>
+          @if (isInvalid('fechaNacimiento')) {
+            <p class="form-error">{{ getFieldError('fechaNacimiento') }}</p>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="perfil">Perfil</label>
+          <select id="perfil" formControlName="perfil" [class.invalid]="isInvalid('perfil')">
+            @for (opcion of perfiles; track opcion.value) {
+              <option [value]="opcion.value">{{ opcion.label }}</option>
+            }
+          </select>
+          <p class="form-hint">Por defecto: usuario. Podés asignar administrador si corresponde.</p>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="descripcionBreve">Descripción breve</label>
+        <textarea
+          id="descripcionBreve"
+          formControlName="descripcionBreve"
+          placeholder="Contanos un poco sobre vos..."
+          [class.invalid]="isInvalid('descripcionBreve')"
+        ></textarea>
+        @if (isInvalid('descripcionBreve')) {
+          <p class="form-error">{{ getFieldError('descripcionBreve') }}</p>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="imagenPerfil">Imagen de perfil</label>
+        <input
+          id="imagenPerfil"
+          class="file-input"
+          type="file"
+          accept="image/*"
+          (change)="onImagenSeleccionada($event)"
+        />
+        @if (imagenPreview) {
+          <img class="file-preview" [src]="imagenPreview" alt="Vista previa de perfil" />
+        }
+      </div>
+
+      <button class="btn btn-primary" type="submit" [disabled]="loading">
+        {{ loading ? 'Registrando...' : 'Crear cuenta' }}
+      </button>
+    </form>
+
+    <p class="form-footer">
+      ¿Ya tenés cuenta?
+      <a routerLink="/login">Iniciá sesión</a>
+    </p>
+  </div>
+</div>
