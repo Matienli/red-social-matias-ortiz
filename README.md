@@ -2,7 +2,7 @@
 
 ## Alumno
 
-**Matías Ortiz Billordo**
+**Matias Ortiz Billordo**
 
 ---
 
