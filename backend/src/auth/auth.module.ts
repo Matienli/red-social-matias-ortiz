@@ -18,7 +18,7 @@ import { UploadsModule } from '../uploads/uploads.module';
       useFactory: (config: ConfigService) => ({
         secret: config.getOrThrow<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: (config.get<string>('JWT_EXPIRES_IN') ?? '1h') as '1h',
+          expiresIn: (config.get<string>('JWT_EXPIRES_IN') ?? '15m') as '15m',
         },
       }),
       inject: [ConfigService],
