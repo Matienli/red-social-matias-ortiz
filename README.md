@@ -10,10 +10,10 @@
 
 | Aplicación | Enlace |
 |------------|--------|
-| **Frontend** | _Pendiente de deploy_ |
-| **Backend (API)** | https://tp2-redsocial-api.onrender.com/api |
+| **Frontend** | https://red-social-matias-ortiz.vercel.app |
+| **Backend (API)** | https://red-social-matias-ortiz.onrender.com/api |
 
-> Cuando el frontend esté publicado (Vercel / Netlify), actualizá el enlace en esta tabla.
+Rama desplegada: `sprint-1`
 
 ---
 
@@ -37,8 +37,9 @@
 
 ### Infraestructura
 - **MongoDB Atlas** — base de datos en la nube
-- **Render** — deploy del backend (configurado)
-- **Vercel** — deploy del frontend (preparado)
+- **Render** — deploy del backend (NestJS)
+- **Vercel** — deploy del frontend (Angular)
+- **Cloudinary** — almacenamiento de imágenes
 
 ---
 
