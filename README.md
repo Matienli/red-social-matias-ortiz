@@ -44,46 +44,6 @@ Rama de desarrollo actual: `sprint-2`
 
 ---
 
-## Desarrollo local
-
-### Requisitos
-- Node.js 18+
-- Cuenta en MongoDB Atlas (o MongoDB local)
-- Credenciales de Cloudinary (para subir imágenes)
-
-### Configuración del backend
-
-```bash
-cd backend
-cp .env.example .env   # en Windows: copy .env.example .env
-```
-
-Completar en `backend/.env`:
-- `MONGODB_URI` — connection string de Atlas o `mongodb://localhost:27017/red-social`
-- `JWT_SECRET` — clave secreta para firmar tokens
-- `JWT_EXPIRES_IN` — ej. `15m`
-- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
-
-### Levantar la aplicación
-
-**Terminal 1 — API (puerto 3000)**
-```bash
-cd backend
-npm install
-npm run start:dev
-```
-
-**Terminal 2 — Frontend (puerto 4200)**
-```bash
-cd frontend
-npm install
-npm start
-```
-
-Abrir http://localhost:4200 — el frontend apunta a `http://localhost:3000/api` en desarrollo.
-
----
-
 ## Sprints
 
 ### Sprint 1 — Autenticación y base del proyecto
