@@ -1,20 +1,104 @@
 <div class="page-shell">
   <app-navbar />
 
-  <main class="page-content">
-    <header class="page-header">
-      <h1>Publicaciones</h1>
-      <p>Descubrí lo que comparte la comunidad.</p>
+  <main class="page-content publicaciones-page">
+    <header class="page-header publicaciones-page__header">
+      <div>
+        <h1>Publicaciones</h1>
+        <p>Descubrí lo que comparte la comunidad.</p>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="mostrarFormulario.set(!mostrarFormulario())">
+        {{ mostrarFormulario() ? 'Cancelar' : 'Nueva publicación' }}
+      </button>
     </header>
 
-    <div class="section-placeholder">
-      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width: 40px; height: 40px; margin-bottom: 1rem; color: var(--color-cyan)">
-        <rect x="3" y="3" width="7" height="7" rx="1.5" />
-        <rect x="14" y="3" width="7" height="7" rx="1.5" />
-        <rect x="3" y="14" width="7" height="7" rx="1.5" />
-        <rect x="14" y="14" width="7" height="7" rx="1.5" />
-      </svg>
-      <h2>Próximamente</h2>
-    </div>
+    @if (mostrarFormulario()) {
+      <section class="card publicaciones-page__form">
+        <h2>Crear publicación</h2>
+        <form class="form-grid" [formGroup]="form" (ngSubmit)="crearPublicacion()">
+          <div class="form-field">
+            <label for="titulo">Título</label>
+            <input id="titulo" type="text" formControlName="titulo" placeholder="Título de la publicación" />
+          </div>
+          <div class="form-field">
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" rows="4" formControlName="descripcion" placeholder="¿Qué querés compartir?"></textarea>
+          </div>
+          <div class="form-field">
+            <label for="imagen">Imagen (opcional)</label>
+            <input id="imagen" type="file" accept="image/*" (change)="onImagenSeleccionada($event)" />
+            @if (imagenPreview) {
+              <img class="publicaciones-page__preview" [src]="imagenPreview" alt="Vista previa" />
+            }
+          </div>
+          <button class="btn btn-primary" type="submit" [disabled]="creando()">
+            {{ creando() ? 'Publicando...' : 'Publicar' }}
+          </button>
+        </form>
+      </section>
+    }
+
+    <section class="publicaciones-page__toolbar">
+      <span>Ordenar por:</span>
+      <button
+        type="button"
+        class="btn btn-ghost btn-sm"
+        [class.active]="orden() === 'fecha'"
+        (click)="cambiarOrden('fecha')"
+      >
+        Fecha
+      </button>
+      <button
+        type="button"
+        class="btn btn-ghost btn-sm"
+        [class.active]="orden() === 'me-gusta'"
+        (click)="cambiarOrden('me-gusta')"
+      >
+        Me gusta
+      </button>
+    </section>
+
+    @if (cargando()) {
+      <div class="section-placeholder">
+        <p>Cargando publicaciones...</p>
+      </div>
+    } @else if (!publicaciones().length) {
+      <div class="section-placeholder">
+        <h2>Sin publicaciones</h2>
+        <p>Todavía no hay publicaciones. ¡Sé el primero en publicar!</p>
+      </div>
+    } @else {
+      <div class="publicaciones-page__list">
+        @for (publicacion of publicaciones(); track publicacion.id) {
+          <app-publicacion-card
+            [publicacion]="publicacion"
+            [usuarioActualId]="usuarioActualId()"
+            [esAdministrador]="esAdministrador()"
+            (meGustaCambiado)="onMeGusta($event)"
+            (eliminarSolicitado)="onEliminar($event)"
+          />
+        }
+      </div>
+
+      <nav class="publicaciones-page__pagination" aria-label="Paginación">
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm"
+          [disabled]="pagina() <= 1"
+          (click)="paginaAnterior()"
+        >
+          Anterior
+        </button>
+        <span>Página {{ pagina() }} de {{ totalPaginas() }}</span>
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm"
+          [disabled]="pagina() >= totalPaginas()"
+          (click)="paginaSiguiente()"
+        >
+          Siguiente
+        </button>
+      </nav>
+    }
   </main>
 </div>
