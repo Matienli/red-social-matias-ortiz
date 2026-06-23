@@ -99,17 +99,6 @@ Rama de desarrollo actual: `sprint-2`
 
 ---
 
-## API — Autenticación
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| `POST` | `/api/auth/register` | Registro de usuario (multipart, imagen de perfil opcional). Público. |
-| `POST` | `/api/auth/registro` | Alias de registro. Público. |
-| `POST` | `/api/auth/login` | Login con correo o nombre de usuario. Público. |
-| `GET` | `/api/auth/perfil` | Perfil del usuario autenticado. Requiere JWT. |
-
----
-
 ## Estructura del repositorio
 
 ```
