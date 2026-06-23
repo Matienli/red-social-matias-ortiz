@@ -10,6 +10,8 @@ import { LoginDto } from './dto/login.dto';
 import { RegistroDto } from './dto/registro.dto';
 import { PerfilUsuario, UsuarioDocument } from '../users/schemas/usuario.schema';
 import { UploadsService } from '../uploads/uploads.service';
+import { PublicacionesService } from '../publicaciones/publicaciones.service';
+import { PublicacionRespuesta } from '../publicaciones/publicaciones.types';
 
 export interface UsuarioRespuesta {
   id: string;
@@ -28,12 +30,17 @@ export interface AuthRespuesta {
   usuario: UsuarioRespuesta;
 }
 
+export interface PerfilCompletoRespuesta extends UsuarioRespuesta {
+  ultimasPublicaciones: PublicacionRespuesta[];
+}
+
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly uploadsService: UploadsService,
+    private readonly publicacionesService: PublicacionesService,
   ) {}
 
   async registro(
@@ -96,12 +103,22 @@ export class AuthService {
     return this.construirRespuestaAuth(usuario);
   }
 
-  async perfil(userId: string): Promise<UsuarioRespuesta> {
+  async perfil(userId: string): Promise<PerfilCompletoRespuesta> {
     const usuario = await this.usersService.findById(userId);
     if (!usuario) {
       throw new UnauthorizedException('Usuario no encontrado');
     }
-    return this.mapearUsuario(usuario);
+
+    const ultimasPublicaciones = await this.publicacionesService.listarPorAutor(
+      userId,
+      3,
+      true,
+    );
+
+    return {
+      ...this.mapearUsuario(usuario),
+      ultimasPublicaciones,
+    };
   }
 
   private construirRespuestaAuth(usuario: UsuarioDocument): AuthRespuesta {

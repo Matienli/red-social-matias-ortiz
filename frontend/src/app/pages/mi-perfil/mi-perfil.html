@@ -2,7 +2,11 @@
   <app-navbar />
 
   <main class="page-content">
-    @if (currentUser(); as user) {
+    @if (cargando()) {
+      <div class="section-placeholder">
+        <p>Cargando perfil...</p>
+      </div>
+    } @else if (perfil(); as user) {
       <header class="page-header">
         <h1>Mi perfil</h1>
         <p>Tu información personal en la red.</p>
@@ -18,7 +22,7 @@
             </div>
           }
           <div>
-            <h1>{{ user.nombre }} {{ user.apellido }}</h1>
+            <h2>{{ user.nombre }} {{ user.apellido }}</h2>
             <p class="profile-card__username">@{{ user.nombreUsuario }}</p>
             <span class="profile-card__badge">{{ user.perfil }}</span>
           </div>
@@ -38,6 +42,29 @@
             <dd>{{ user.descripcionBreve }}</dd>
           </div>
         </dl>
+      </section>
+
+      <section class="profile-posts">
+        <header class="profile-posts__header">
+          <h2>Mis últimas publicaciones</h2>
+          <p>Hasta 3 publicaciones recientes con sus comentarios.</p>
+        </header>
+
+        @if (!user.ultimasPublicaciones.length) {
+          <div class="section-placeholder">
+            <p>Todavía no publicaste nada.</p>
+          </div>
+        } @else {
+          <div class="profile-posts__list">
+            @for (publicacion of user.ultimasPublicaciones; track publicacion.id) {
+              <app-publicacion-card
+                [publicacion]="publicacion"
+                [usuarioActualId]="user.id"
+                [mostrarComentarios]="true"
+              />
+            }
+          </div>
+        }
       </section>
     } @else {
       <div class="section-placeholder">

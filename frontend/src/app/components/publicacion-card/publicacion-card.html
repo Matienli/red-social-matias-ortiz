@@ -1,0 +1,66 @@
+<article class="publicacion-card">
+  <header class="publicacion-card__header">
+    @if (resolveMediaUrl(publicacion().autor.imagenPerfil); as avatar) {
+      <img class="publicacion-card__avatar" [src]="avatar" [alt]="publicacion().autor.nombre" />
+    } @else {
+      <div class="publicacion-card__avatar publicacion-card__avatar--placeholder">
+        {{ publicacion().autor.nombre.charAt(0) }}{{ publicacion().autor.apellido.charAt(0) }}
+      </div>
+    }
+    <div>
+      <h2 class="publicacion-card__autor">
+        {{ publicacion().autor.nombre }} {{ publicacion().autor.apellido }}
+      </h2>
+      <p class="publicacion-card__meta">
+        @{{ publicacion().autor.nombreUsuario }} · {{ formatFecha(publicacion().createdAt) }}
+      </p>
+    </div>
+  </header>
+
+  <div class="publicacion-card__body">
+    <h3>{{ publicacion().titulo }}</h3>
+    <p>{{ publicacion().descripcion }}</p>
+    @if (resolveMediaUrl(publicacion().imagenUrl); as imagen) {
+      <img class="publicacion-card__imagen" [src]="imagen" [alt]="publicacion().titulo" />
+    }
+  </div>
+
+  <footer class="publicacion-card__footer">
+    <button
+      type="button"
+      class="btn btn-ghost btn-sm publicacion-card__like"
+      [class.publicacion-card__like--active]="publicacion().meGustaPorMi"
+      (click)="cambiarMeGusta()"
+    >
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 5.5 5.5 5.5 0 0 1 21.5 12C19 16.5 12 21 12 21Z"
+        />
+      </svg>
+      {{ publicacion().cantidadMeGusta }}
+    </button>
+
+    @if (puedeEliminar()) {
+      <button type="button" class="btn btn-ghost btn-sm publicacion-card__delete" (click)="eliminar()">
+        Eliminar
+      </button>
+    }
+  </footer>
+
+  @if (mostrarComentarios() && publicacion().comentarios?.length) {
+    <section class="publicacion-card__comentarios">
+      <h4>Comentarios</h4>
+      <ul>
+        @for (comentario of publicacion().comentarios; track comentario.id) {
+          <li>
+            <strong>@{{ comentario.autor.nombreUsuario }}</strong>
+            <span>{{ formatFecha(comentario.createdAt) }}</span>
+            <p>{{ comentario.mensaje }}</p>
+          </li>
+        }
+      </ul>
+    </section>
+  } @else if (mostrarComentarios()) {
+    <p class="publicacion-card__sin-comentarios">Sin comentarios todavía.</p>
+  }
+</article>

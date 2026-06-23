@@ -139,3 +139,21 @@
     grid-template-columns: 1fr;
   }
 }
+
+.profile-posts {
+  margin-top: 2rem;
+}
+
+.profile-posts__header h2 {
+  margin: 0 0 0.35rem;
+}
+
+.profile-posts__header p {
+  margin: 0 0 1rem;
+  color: var(--color-text-muted);
+}
+
+.profile-posts__list {
+  display: grid;
+  gap: 1rem;
+}
