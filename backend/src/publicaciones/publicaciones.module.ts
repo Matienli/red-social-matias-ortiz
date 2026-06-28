@@ -5,6 +5,7 @@ import { Comentario, ComentarioSchema } from './schemas/comentario.schema';
 import { PublicacionesService } from './publicaciones.service';
 import { ComentariosService } from './comentarios.service';
 import { PublicacionesController } from './publicaciones.controller';
+import { ComentariosController } from './comentarios.controller';
 import { UploadsModule } from '../uploads/uploads.module';
 
 @Module({
@@ -15,7 +16,7 @@ import { UploadsModule } from '../uploads/uploads.module';
       { name: Comentario.name, schema: ComentarioSchema },
     ]),
   ],
-  controllers: [PublicacionesController],
+  controllers: [PublicacionesController, ComentariosController],
   providers: [PublicacionesService, ComentariosService],
   exports: [PublicacionesService, ComentariosService],
 })

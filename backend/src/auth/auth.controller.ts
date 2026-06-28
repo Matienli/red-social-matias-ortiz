@@ -33,6 +33,7 @@ import { RegistroDto } from './dto/registro.dto';
 import { Public } from './decorators/public.decorator';
 
 import { imagenOpcionalPipe } from '../uploads/image-file.pipe';
+import { CurrentUser, UsuarioJwtPayload } from './decorators/current-user.decorator';
 
 
 
@@ -117,6 +118,24 @@ export class AuthController {
   }
 
 
+
+  @Post('autorizar')
+  @HttpCode(HttpStatus.OK)
+  autorizar(@CurrentUser() usuario: UsuarioJwtPayload) {
+    return this.authService.autorizar(usuario.userId);
+  }
+
+  @Post('refrescar')
+  @HttpCode(HttpStatus.OK)
+  refrescar(@CurrentUser() usuario: UsuarioJwtPayload) {
+    return this.authService.refreshToken(usuario);
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  refreshAlias(@CurrentUser() usuario: UsuarioJwtPayload) {
+    return this.authService.refreshToken(usuario);
+  }
 
   @Get('perfil')
 

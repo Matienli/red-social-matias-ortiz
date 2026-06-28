@@ -1,0 +1,255 @@
+<div class="page-shell publicacion-detalle-shell">
+
+  <app-navbar />
+
+
+
+  @if (cargandoPublicacion()) {
+
+    <main class="page-content publicacion-detalle-page">
+
+      <div class="section-placeholder">
+
+        <p>Cargando publicación...</p>
+
+      </div>
+
+    </main>
+
+  } @else if (publicacion(); as pub) {
+
+    <div class="publicacion-detalle-chat">
+
+      <header class="publicacion-detalle-chat__top">
+
+        <a routerLink="/publicaciones" class="btn btn-ghost btn-sm">← Volver a publicaciones</a>
+
+      </header>
+
+
+
+      <section class="publicacion-detalle-chat__publicacion">
+
+        <app-publicacion-card
+
+          [publicacion]="pub"
+
+          [usuarioActualId]="usuarioActualId()"
+
+          [esAdministrador]="esAdministrador()"
+
+          [imagenExpandible]="true"
+
+          [comentariosExpandibles]="false"
+
+          (meGustaCambiado)="onMeGusta($event)"
+
+          (eliminarSolicitado)="onEliminar($event)"
+
+          (enfocarComentarios)="scrollAlChat()"
+
+        />
+
+      </section>
+
+
+
+      <section id="comentarios" class="publicacion-detalle-chat__panel card">
+
+        <div #mensajesScroll class="publicacion-detalle-chat__mensajes">
+
+          @if (cargandoComentarios()) {
+
+            <p class="publicacion-detalle-chat__estado">Cargando comentarios...</p>
+
+          } @else {
+
+            @if (hayMasComentarios()) {
+
+              <div class="publicacion-detalle-chat__cargar-anteriores">
+
+                <button
+
+                  type="button"
+
+                  class="btn btn-ghost btn-sm"
+
+                  [disabled]="cargandoMasComentarios()"
+
+                  (click)="cargarMasComentarios()"
+
+                >
+
+                  {{ cargandoMasComentarios() ? 'Cargando...' : 'Cargar más' }}
+
+                </button>
+
+              </div>
+
+            }
+
+
+
+            @if (!comentarios().length) {
+
+              <p class="publicacion-detalle-chat__estado">Sin comentarios todavía. ¡Sé el primero!</p>
+
+            } @else {
+
+              <ul class="publicacion-detalle-chat__lista">
+
+                @for (comentario of comentarios(); track comentario.id) {
+
+                  <li class="publicacion-detalle-chat__mensaje">
+
+                    <div class="publicacion-detalle-chat__mensaje-header">
+
+                      @if (resolveMediaUrl(comentario.autor.imagenPerfil); as avatar) {
+
+                        <img
+
+                          class="publicacion-detalle-chat__avatar"
+
+                          [src]="avatar"
+
+                          [alt]="comentario.autor.nombre"
+
+                        />
+
+                      } @else {
+
+                        <div class="publicacion-detalle-chat__avatar publicacion-detalle-chat__avatar--placeholder">
+
+                          {{ comentario.autor.nombre.charAt(0) }}{{ comentario.autor.apellido.charAt(0) }}
+
+                        </div>
+
+                      }
+
+                      <div class="publicacion-detalle-chat__mensaje-meta">
+                        <strong>@{{ comentario.autor.nombreUsuario }}</strong>
+                        <span>
+                          {{ formatFecha(comentario.createdAt) }}
+                          @if (comentario.modificado) {
+                            · editado
+                          }
+                        </span>
+                      </div>
+                      @if (esComentarioPropio(comentario) && comentarioEditandoId() !== comentario.id) {
+                        <button
+                          type="button"
+                          class="btn btn-ghost btn-sm publicacion-detalle-chat__editar"
+                          (click)="iniciarEdicion(comentario)"
+                        >
+                          Editar
+                        </button>
+                      }
+                    </div>
+
+                    @if (comentarioEditandoId() === comentario.id) {
+                      <form
+                        class="publicacion-detalle-chat__editar-form"
+                        [formGroup]="editarComentarioForm"
+                        (ngSubmit)="guardarEdicion(comentario.id)"
+                      >
+                        <textarea rows="2" formControlName="mensaje" aria-label="Editar comentario"></textarea>
+                        <div class="publicacion-detalle-chat__editar-acciones">
+                          <button
+                            type="submit"
+                            class="btn btn-primary btn-sm"
+                            [disabled]="guardandoEdicion() || editarComentarioForm.invalid"
+                          >
+                            {{ guardandoEdicion() ? 'Guardando...' : 'Guardar' }}
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-ghost btn-sm"
+                            [disabled]="guardandoEdicion()"
+                            (click)="cancelarEdicion()"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      </form>
+                    } @else {
+                      <p>{{ comentario.mensaje }}</p>
+                    }
+
+                  </li>
+
+                }
+
+              </ul>
+
+            }
+
+          }
+
+        </div>
+
+
+
+        <form
+
+          #comentarioInput
+
+          class="publicacion-detalle-chat__input"
+
+          [formGroup]="comentarioForm"
+
+          (ngSubmit)="enviarComentario()"
+
+        >
+
+          <textarea
+
+            rows="2"
+
+            formControlName="mensaje"
+
+            placeholder="Escribí un comentario..."
+
+            aria-label="Nuevo comentario"
+
+          ></textarea>
+
+          <button
+
+            type="submit"
+
+            class="btn btn-primary"
+
+            [disabled]="enviandoComentario() || comentarioForm.invalid"
+
+          >
+
+            {{ enviandoComentario() ? 'Publicando...' : 'Enviar' }}
+
+          </button>
+
+        </form>
+
+      </section>
+
+    </div>
+
+  } @else {
+
+    <main class="page-content publicacion-detalle-page">
+
+      <div class="section-placeholder">
+
+        <h2>Publicación no encontrada</h2>
+
+        <p>La publicación que buscás no existe o fue eliminada.</p>
+
+        <a routerLink="/publicaciones" class="btn btn-primary">Ir a publicaciones</a>
+
+      </div>
+
+    </main>
+
+  }
+
+</div>
+

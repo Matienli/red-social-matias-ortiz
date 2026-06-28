@@ -3,7 +3,10 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
+  Comentario,
+  ComentariosPaginados,
   CrearPublicacionRequest,
+  ListarComentariosParams,
   ListarPublicacionesParams,
   PerfilCompleto,
   Publicacion,
@@ -28,6 +31,33 @@ export class PublicacionesService {
     }
 
     return this.http.get<PublicacionesPaginadas>(this.baseUrl, { params: httpParams });
+  }
+
+  obtenerPorId(id: string): Observable<Publicacion> {
+    return this.http.get<Publicacion>(`${this.baseUrl}/${id}`);
+  }
+
+  listarComentarios(
+    publicacionId: string,
+    params: ListarComentariosParams = {},
+  ): Observable<ComentariosPaginados> {
+    const httpParams = new HttpParams()
+      .set('offset', params.offset ?? 0)
+      .set('limit', params.limit ?? 5);
+
+    return this.http.get<ComentariosPaginados>(`${this.baseUrl}/${publicacionId}/comentarios`, {
+      params: httpParams,
+    });
+  }
+
+  crearComentario(publicacionId: string, mensaje: string): Observable<Comentario> {
+    return this.http.post<Comentario>(`${this.baseUrl}/${publicacionId}/comentarios`, {
+      mensaje,
+    });
+  }
+
+  actualizarComentario(id: string, mensaje: string): Observable<Comentario> {
+    return this.http.put<Comentario>(`${environment.apiUrl}/comentarios/${id}`, { mensaje });
   }
 
   crear(data: CrearPublicacionRequest): Observable<Publicacion> {

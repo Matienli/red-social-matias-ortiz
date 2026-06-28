@@ -9,7 +9,9 @@ export interface AutorPublicacion {
 export interface Comentario {
   id: string;
   mensaje: string;
+  modificado?: boolean;
   createdAt: string;
+  updatedAt?: string;
   autor: AutorPublicacion;
 }
 
@@ -37,6 +39,18 @@ export interface ListarPublicacionesParams {
 
 export interface PublicacionesPaginadas {
   datos: Publicacion[];
+  offset: number;
+  limit: number;
+  total: number;
+}
+
+export interface ListarComentariosParams {
+  offset?: number;
+  limit?: number;
+}
+
+export interface ComentariosPaginados {
+  datos: Comentario[];
   offset: number;
   limit: number;
   total: number;

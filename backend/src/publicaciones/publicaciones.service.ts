@@ -59,6 +59,15 @@ export class PublicacionesService {
     };
   }
 
+  async obtenerPorId(
+    publicacionId: string,
+    usuarioId?: string,
+  ): Promise<PublicacionRespuesta> {
+    const publicacion = await this.buscarPublicacionActiva(publicacionId);
+    await publicacion.populate('autorId', 'nombre apellido nombreUsuario imagenPerfil');
+    return this.mapearPublicacion(publicacion, usuarioId);
+  }
+
   async listarPorAutor(
     autorId: string,
     limite: number,

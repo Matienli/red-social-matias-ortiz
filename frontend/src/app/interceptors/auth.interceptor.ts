@@ -4,6 +4,10 @@ import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth';
 
+function esRutaAuthPublica(url: string): boolean {
+  return /\/auth\/(login|register|registro)(\/|$|\?)/.test(url);
+}
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const router = inject(Router);
@@ -19,7 +23,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authedReq).pipe(
     catchError((error) => {
-      if (error.status === 401 && token) {
+      if (error.status === 401 && !esRutaAuthPublica(req.url)) {
         auth.logout();
         void router.navigate(['/login']);
       }
