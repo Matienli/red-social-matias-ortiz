@@ -40,10 +40,12 @@
 
     <h3>
 
-      <a [routerLink]="['/publicaciones', publicacion().id]" class="publicacion-card__titulo-link">
-
+      <a
+        href="#"
+        class="publicacion-card__titulo-link"
+        (click)="irADetalle($event)"
+      >
         {{ publicacion().titulo }}
-
       </a>
 
     </h3>
@@ -312,13 +314,9 @@
 
 
       <a
-
-        [routerLink]="['/publicaciones', publicacion().id]"
-
-        fragment="comentarios"
-
+        href="#"
         class="publicacion-card__ver-todos"
-
+        (click)="irADetalle($event, 'comentarios')"
       >
 
         @if ((totalComentarios() ?? 0) > previewLimite) {

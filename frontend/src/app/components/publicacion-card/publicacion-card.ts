@@ -132,24 +132,26 @@ export class PublicacionCard {
 
 
   abrirImagen(url: string): void {
-
     if (!this.imagenExpandible()) {
-
       return;
-
     }
-
     this.imageViewer.open(url, this.publicacion().titulo);
-
   }
 
-
+  irADetalle(event: Event, fragment?: string): void {
+    event.preventDefault();
+    void this.router.navigate(['/publicaciones', this.publicacion().id], {
+      fragment,
+      state: { publicacion: this.publicacion() },
+    });
+  }
 
   toggleComentarios(): void {
     if (!this.comentariosExpandibles()) {
       if (this.mostrarComentarios()) {
         void this.router.navigate(['/publicaciones', this.publicacion().id], {
           fragment: 'comentarios',
+          state: { publicacion: this.publicacion() },
         });
       } else {
         this.enfocarComentarios.emit();

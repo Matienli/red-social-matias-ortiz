@@ -122,25 +122,22 @@ export class PublicacionDetalle implements OnInit, AfterViewInit {
 
 
   ngOnInit(): void {
-
     const id = this.route.snapshot.paramMap.get('id');
-
     if (!id) {
-
       this.cargandoPublicacion.set(false);
-
       return;
-
     }
-
-
 
     this.debeScrollAlChat = this.route.snapshot.fragment === 'comentarios';
 
-    this.cargarPublicacion(id);
+    const publicacionEnState = this.obtenerPublicacionDesdeState(id);
+    if (publicacionEnState) {
+      this.publicacion.set(publicacionEnState);
+      this.cargandoPublicacion.set(false);
+    }
 
+    this.cargarPublicacion(id, !!publicacionEnState);
     this.cargarComentarios(id);
-
   }
 
 
@@ -177,40 +174,36 @@ export class PublicacionDetalle implements OnInit, AfterViewInit {
 
 
 
-  cargarPublicacion(id: string): void {
-
-    this.cargandoPublicacion.set(true);
-
-
+  cargarPublicacion(id: string, tieneFallback = false): void {
+    if (!this.publicacion()) {
+      this.cargandoPublicacion.set(true);
+    }
 
     this.publicacionesService.obtenerPorId(id).subscribe({
-
       next: (publicacion) => {
-
         this.publicacion.set(publicacion);
-
         this.cargandoPublicacion.set(false);
-
       },
-
-      error: () => {
-
+      error: (err) => {
         this.cargandoPublicacion.set(false);
-
+        if (tieneFallback && this.publicacion()) {
+          return;
+        }
         this.modal.open({
-
           title: 'Error',
-
-          message: 'No pudimos cargar la publicación.',
-
+          message: err?.error?.message ?? 'No pudimos cargar la publicación.',
           type: 'error',
-
         });
-
       },
-
     });
+  }
 
+  private obtenerPublicacionDesdeState(id: string): Publicacion | null {
+    const state = history.state as { publicacion?: Publicacion };
+    if (!state?.publicacion || state.publicacion.id !== id) {
+      return null;
+    }
+    return state.publicacion;
   }
 
 
