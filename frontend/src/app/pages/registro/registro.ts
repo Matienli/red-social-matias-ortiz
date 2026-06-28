@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Navbar } from '../../shared/navbar/navbar';
+import { LoadingScreen } from '../../shared/loading-screen/loading-screen';
 import { AuthService } from '../../services/auth';
 import { ModalService } from '../../services/modal';
 import { PerfilUsuario } from '../../models/user.model';
@@ -58,7 +59,7 @@ function fechaNacimientoValidator(control: AbstractControl): ValidationErrors | 
 
 @Component({
   selector: 'app-registro',
-  imports: [ReactiveFormsModule, RouterLink, Navbar],
+  imports: [ReactiveFormsModule, RouterLink, Navbar, LoadingScreen],
   templateUrl: './registro.html',
   styleUrl: './registro.scss',
 })
@@ -216,13 +217,7 @@ export class Registro {
       })
       .subscribe({
         next: () => {
-          this.loading = false;
-          this.modal.open({
-            title: '¡Registro exitoso!',
-            message: 'Tu cuenta fue creada correctamente. Ya podés usar la red social.',
-            type: 'success',
-          });
-          this.router.navigate(['/publicaciones']);
+          void this.router.navigate(['/cargando']);
         },
         error: (err) => {
           this.loading = false;

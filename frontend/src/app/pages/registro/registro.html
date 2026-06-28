@@ -1,3 +1,6 @@
+@if (loading) {
+  <app-loading-screen />
+} @else {
 <app-navbar />
 <div class="auth-layout">
   <div class="card card--wide">
@@ -214,9 +217,7 @@
         }
       </div>
 
-      <button class="btn btn-primary" type="submit" [disabled]="loading">
-        {{ loading ? 'Registrando...' : 'Crear cuenta' }}
-      </button>
+      <button class="btn btn-primary" type="submit">Crear cuenta</button>
     </form>
 
     <p class="form-footer">
@@ -225,3 +226,4 @@
     </p>
   </div>
 </div>
+}
