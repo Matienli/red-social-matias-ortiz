@@ -217,7 +217,7 @@ export class Registro {
       })
       .subscribe({
         next: () => {
-          void this.router.navigate(['/cargando']);
+          void this.router.navigate(['/publicaciones']);
         },
         error: (err) => {
           this.loading = false;

@@ -62,7 +62,7 @@ export class Login {
     this.loading = true;
     this.auth.login(this.form.getRawValue()).subscribe({
       next: () => {
-        void this.router.navigate(['/cargando']);
+        void this.router.navigate(['/publicaciones']);
       },
       error: (err) => {
         this.loading = false;

@@ -22,6 +22,9 @@ export class Cargando implements OnInit {
       next: (valida) => {
         void this.router.navigate(valida ? ['/publicaciones'] : ['/login']);
       },
+      error: () => {
+        void this.router.navigate(['/login']);
+      },
     });
   }
 }
