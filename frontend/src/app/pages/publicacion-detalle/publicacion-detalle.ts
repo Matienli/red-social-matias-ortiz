@@ -34,6 +34,8 @@ import { Comentario, Publicacion } from '../../models/publicacion.model';
 
 import { resolveMediaUrl } from '../../utils/media-url';
 
+import { finalize } from 'rxjs';
+
 
 
 const LIMITE_COMENTARIOS = 3;
@@ -220,16 +222,21 @@ export class PublicacionDetalle implements OnInit, AfterViewInit {
 
       .listarComentarios(id, { offset: 0, limit: LIMITE_COMENTARIOS })
 
+      .pipe(finalize(() => this.cargandoComentarios.set(false)))
+
       .subscribe({
 
         next: (respuesta) => {
 
           this.comentarios.set(this.ordenarComentariosParaVista(respuesta.datos));
+
           this.offsetComentarios = respuesta.datos.length;
+
           this.totalComentarios.set(respuesta.total);
+
           this.hayMasComentarios.set(this.offsetComentarios < respuesta.total);
 
-          this.cargandoComentarios.set(false);
+
 
           if (!this.hayMasComentarios()) {
 
@@ -241,7 +248,11 @@ export class PublicacionDetalle implements OnInit, AfterViewInit {
 
         error: () => {
 
-          this.cargandoComentarios.set(false);
+          if (this.aplicarComentariosDesdePublicacion()) {
+
+            return;
+
+          }
 
           this.modal.open({
 
@@ -288,14 +299,13 @@ export class PublicacionDetalle implements OnInit, AfterViewInit {
         offset: this.offsetComentarios,
         limit: restantes,
       })
+      .pipe(finalize(() => this.cargandoMasComentarios.set(false)))
       .subscribe({
         next: (respuesta) => {
           const masViejos = this.ordenarComentariosParaVista(respuesta.datos);
           this.comentarios.update((actuales) => [...masViejos, ...actuales]);
           this.offsetComentarios = this.totalComentarios();
           this.hayMasComentarios.set(false);
-
-          this.cargandoMasComentarios.set(false);
 
 
 
@@ -312,8 +322,6 @@ export class PublicacionDetalle implements OnInit, AfterViewInit {
         },
 
         error: () => {
-
-          this.cargandoMasComentarios.set(false);
 
           this.modal.open({
 
@@ -529,10 +537,30 @@ export class PublicacionDetalle implements OnInit, AfterViewInit {
     });
   }
 
-  private ordenarComentariosParaVista(datos: Comentario[]): Comentario[] {
+  private ordenarComentariosParaVista(datos: Comentario[] | undefined): Comentario[] {
+
+    if (!datos?.length) {
+
+      return [];
+
+    }
 
     return [...datos].reverse();
 
+  }
+
+  private aplicarComentariosDesdePublicacion(): boolean {
+    const comentarios = this.publicacion()?.comentarios;
+    if (!comentarios?.length) {
+      return false;
+    }
+
+    this.comentarios.set([...comentarios]);
+    this.offsetComentarios = comentarios.length;
+    this.totalComentarios.set(comentarios.length);
+    this.hayMasComentarios.set(false);
+    queueMicrotask(() => this.scrollAlFinal());
+    return true;
   }
 
 
