@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Navbar } from '../../shared/navbar/navbar';
+import { LoadingScreen } from '../../shared/loading-screen/loading-screen';
 import { AuthService } from '../../services/auth';
 import { ModalService } from '../../services/modal';
 import {
@@ -11,7 +12,7 @@ import {
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink, Navbar],
+  imports: [ReactiveFormsModule, RouterLink, Navbar, LoadingScreen],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -61,13 +62,7 @@ export class Login {
     this.loading = true;
     this.auth.login(this.form.getRawValue()).subscribe({
       next: () => {
-        this.loading = false;
-        this.modal.open({
-          title: '¡Bienvenido!',
-          message: 'Iniciaste sesión correctamente.',
-          type: 'success',
-        });
-        this.router.navigate(['/publicaciones']);
+        void this.router.navigate(['/cargando']);
       },
       error: (err) => {
         this.loading = false;

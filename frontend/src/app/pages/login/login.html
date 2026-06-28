@@ -1,81 +1,83 @@
-<app-navbar />
-<div class="auth-layout">
-  <div class="card">
-    <div class="card__header">
-      <div class="card__icon" aria-hidden="true">
-        <svg class="icon" viewBox="0 0 24 24" style="width: 24px; height: 24px">
-          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-          <path d="M10 17l5-5-5-5" />
-          <path d="M15 12H3" />
-        </svg>
-      </div>
-      <h1 class="card__title">Iniciar sesión</h1>
-      <p class="card__subtitle">Ingresá con tu correo o nombre de usuario</p>
-    </div>
-
-    <form class="form-grid" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-      <div class="form-field">
-        <label for="identificador">Correo o nombre de usuario</label>
-        <input
-          id="identificador"
-          type="text"
-          formControlName="identificador"
-          placeholder="ej: maria@mail.com o maria_gomez"
-          [class.invalid]="isInvalid('identificador')"
-          autocomplete="username"
-        />
-        @if (isInvalid('identificador')) {
-          <p class="form-error">{{ getIdentificadorError() }}</p>
-        }
-      </div>
-
-      <div class="form-field">
-        <label for="contrasena">Contraseña</label>
-        <div class="password-field">
-          <input
-            id="contrasena"
-            [type]="mostrarContrasena ? 'text' : 'password'"
-            formControlName="contrasena"
-            placeholder="Mín. 8 caracteres, 1 mayúscula y 1 número"
-            [class.invalid]="isInvalid('contrasena')"
-            autocomplete="current-password"
-          />
-          <button
-            type="button"
-            class="password-field__toggle"
-            (click)="mostrarContrasena = !mostrarContrasena"
-            [attr.aria-label]="mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-            [attr.aria-pressed]="mostrarContrasena"
-          >
-            @if (mostrarContrasena) {
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M6.7 6.7C4.6 8.2 3 10 2 12c2 4 6 7 10 7 1.5 0 2.9-.4 4.2-1M9.9 5.1A10.8 10.8 0 0 1 12 5c4 0 8 3 10 7-1 2-2.4 3.8-4.2 5.2"
-                />
-              </svg>
-            } @else {
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            }
-          </button>
+@if (loading) {
+  <app-loading-screen />
+} @else {
+  <app-navbar />
+  <div class="auth-layout">
+    <div class="card">
+      <div class="card__header">
+        <div class="card__icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24" style="width: 24px; height: 24px">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <path d="M10 17l5-5-5-5" />
+            <path d="M15 12H3" />
+          </svg>
         </div>
-        @if (isInvalid('contrasena')) {
-          <p class="form-error">
-            {{ getPasswordErrorMessage(form.get('contrasena')?.errors ?? null) }}
-          </p>
-        }
+        <h1 class="card__title">Iniciar sesión</h1>
+        <p class="card__subtitle">Ingresá con tu correo o nombre de usuario</p>
       </div>
 
-      <button class="btn btn-primary" type="submit" [disabled]="loading">
-        {{ loading ? 'Ingresando...' : 'Ingresar' }}
-      </button>
-    </form>
+      <form class="form-grid" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-field">
+          <label for="identificador">Correo o nombre de usuario</label>
+          <input
+            id="identificador"
+            type="text"
+            formControlName="identificador"
+            placeholder="ej: maria@mail.com o maria_gomez"
+            [class.invalid]="isInvalid('identificador')"
+            autocomplete="username"
+          />
+          @if (isInvalid('identificador')) {
+            <p class="form-error">{{ getIdentificadorError() }}</p>
+          }
+        </div>
 
-    <p class="form-footer">
-      ¿No tenés cuenta?
-      <a routerLink="/registro">Registrate acá</a>
-    </p>
+        <div class="form-field">
+          <label for="contrasena">Contraseña</label>
+          <div class="password-field">
+            <input
+              id="contrasena"
+              [type]="mostrarContrasena ? 'text' : 'password'"
+              formControlName="contrasena"
+              placeholder="Mín. 8 caracteres, 1 mayúscula y 1 número"
+              [class.invalid]="isInvalid('contrasena')"
+              autocomplete="current-password"
+            />
+            <button
+              type="button"
+              class="password-field__toggle"
+              (click)="mostrarContrasena = !mostrarContrasena"
+              [attr.aria-label]="mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              [attr.aria-pressed]="mostrarContrasena"
+            >
+              @if (mostrarContrasena) {
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M6.7 6.7C4.6 8.2 3 10 2 12c2 4 6 7 10 7 1.5 0 2.9-.4 4.2-1M9.9 5.1A10.8 10.8 0 0 1 12 5c4 0 8 3 10 7-1 2-2.4 3.8-4.2 5.2"
+                  />
+                </svg>
+              } @else {
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              }
+            </button>
+          </div>
+          @if (isInvalid('contrasena')) {
+            <p class="form-error">
+              {{ getPasswordErrorMessage(form.get('contrasena')?.errors ?? null) }}
+            </p>
+          }
+        </div>
+
+        <button class="btn btn-primary" type="submit">Ingresar</button>
+      </form>
+
+      <p class="form-footer">
+        ¿No tenés cuenta?
+        <a routerLink="/registro">Registrate acá</a>
+      </p>
+    </div>
   </div>
-</div>
+}
