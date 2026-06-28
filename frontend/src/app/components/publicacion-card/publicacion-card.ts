@@ -14,6 +14,8 @@ import { PublicacionesService } from '../../services/publicaciones';
 
 import { resolveMediaUrl } from '../../utils/media-url';
 
+import { finalize } from 'rxjs';
+
 
 
 const PREVIEW_LIMITE = 3;
@@ -185,21 +187,26 @@ export class PublicacionCard {
 
       .listarComentarios(this.publicacion().id, { offset: 0, limit: PREVIEW_LIMITE })
 
+      .pipe(finalize(() => this.cargandoComentariosPreview.set(false)))
+
       .subscribe({
 
         next: (respuesta) => {
 
-          this.comentariosPreview.set([...respuesta.datos].reverse());
+          this.comentariosPreview.set(this.ordenarComentariosPreview(respuesta.datos));
 
           this.totalComentarios.set(respuesta.total);
-
-          this.cargandoComentariosPreview.set(false);
 
         },
 
         error: () => {
 
-          this.cargandoComentariosPreview.set(false);
+          const comentarios = this.publicacion().comentarios;
+          if (comentarios?.length) {
+            this.comentariosPreview.set(this.ordenarComentariosPreview(comentarios.slice(-PREVIEW_LIMITE)));
+            this.totalComentarios.set(comentarios.length);
+            return;
+          }
 
           this.modal.open({
 
@@ -215,6 +222,13 @@ export class PublicacionCard {
 
       });
 
+  }
+
+  private ordenarComentariosPreview(datos: Comentario[] | undefined): Comentario[] {
+    if (!datos?.length) {
+      return [];
+    }
+    return [...datos].reverse();
   }
 
 

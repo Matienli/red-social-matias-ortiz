@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   Comentario,
@@ -41,13 +41,38 @@ export class PublicacionesService {
     publicacionId: string,
     params: ListarComentariosParams = {},
   ): Observable<ComentariosPaginados> {
-    const httpParams = new HttpParams()
-      .set('offset', params.offset ?? 0)
-      .set('limit', params.limit ?? 5);
+    const offset = params.offset ?? 0;
+    const limit = params.limit ?? 5;
+    const httpParams = new HttpParams().set('offset', offset).set('limit', limit);
 
-    return this.http.get<ComentariosPaginados>(`${this.baseUrl}/${publicacionId}/comentarios`, {
-      params: httpParams,
-    });
+    return this.http
+      .get<ComentariosPaginados | Comentario[]>(
+        `${this.baseUrl}/${publicacionId}/comentarios`,
+        { params: httpParams },
+      )
+      .pipe(map((respuesta) => this.normalizarComentarios(respuesta, offset, limit)));
+  }
+
+  private normalizarComentarios(
+    respuesta: ComentariosPaginados | Comentario[],
+    offset: number,
+    limit: number,
+  ): ComentariosPaginados {
+    if (Array.isArray(respuesta)) {
+      const masRecientesPrimero = [...respuesta].reverse();
+      return {
+        datos: masRecientesPrimero.slice(offset, offset + limit),
+        offset,
+        limit,
+        total: respuesta.length,
+      };
+    }
+
+    if (respuesta && Array.isArray(respuesta.datos)) {
+      return respuesta;
+    }
+
+    return { datos: [], offset, limit, total: 0 };
   }
 
   crearComentario(publicacionId: string, mensaje: string): Observable<Comentario> {
