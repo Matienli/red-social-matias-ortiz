@@ -13,7 +13,18 @@ export class Modal {
     this.modal.close();
   }
 
+  confirm(): void {
+    this.modal.resolveConfirm(true);
+  }
+
+  cancel(): void {
+    this.modal.resolveConfirm(false);
+  }
+
   onBackdropClick(event: MouseEvent): void {
+    if (this.modal.data().confirm) {
+      return;
+    }
     if ((event.target as HTMLElement).classList.contains('modal-backdrop')) {
       this.close();
     }

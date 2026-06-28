@@ -66,6 +66,15 @@
   width: 100%;
 }
 
+.modal__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.modal__actions .modal__btn {
+  flex: 1;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

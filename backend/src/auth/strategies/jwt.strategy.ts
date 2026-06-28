@@ -3,12 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../../users/users.service';
-
-interface JwtPayload {
-  sub: string;
-  correo: string;
-  perfil: string;
-}
+import { JwtTokenPayload } from '../auth.types';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -23,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload) {
+  async validate(payload: JwtTokenPayload) {
     const usuario = await this.usersService.findById(payload.sub);
     if (!usuario || !usuario.activo) {
       throw new UnauthorizedException('Token inválido');
@@ -32,6 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return {
       userId: payload.sub,
       correo: payload.correo,
+      nombreUsuario: payload.nombreUsuario ?? usuario.nombreUsuario,
       perfil: payload.perfil,
     };
   }

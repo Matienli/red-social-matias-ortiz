@@ -3,12 +3,14 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 export interface UsuarioJwt {
   userId: string;
   correo: string;
+  nombreUsuario: string;
   perfil: string;
 }
 
 export class UsuarioJwtPayload implements UsuarioJwt {
   userId!: string;
   correo!: string;
+  nombreUsuario!: string;
   perfil!: string;
 }
 

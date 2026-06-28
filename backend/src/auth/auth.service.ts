@@ -12,6 +12,8 @@ import { PerfilUsuario, UsuarioDocument } from '../users/schemas/usuario.schema'
 import { UploadsService } from '../uploads/uploads.service';
 import { PublicacionesService } from '../publicaciones/publicaciones.service';
 import { PublicacionRespuesta } from '../publicaciones/publicaciones.types';
+import { JwtTokenPayload } from './auth.types';
+import { UsuarioJwt } from './decorators/current-user.decorator';
 
 export interface UsuarioRespuesta {
   id: string;
@@ -121,16 +123,51 @@ export class AuthService {
     };
   }
 
-  private construirRespuestaAuth(usuario: UsuarioDocument): AuthRespuesta {
-    const accessToken = this.jwtService.sign({
-      sub: usuario._id.toString(),
-      correo: usuario.correo,
-      perfil: usuario.perfil,
-    });
+  async autorizar(userId: string): Promise<UsuarioRespuesta> {
+    const usuario = await this.usersService.findById(userId);
+    if (!usuario || !usuario.activo) {
+      throw new UnauthorizedException('Token inválido');
+    }
+
+    return this.mapearUsuario(usuario);
+  }
+
+  async refreshToken(usuarioJwt: UsuarioJwt): Promise<AuthRespuesta> {
+    const usuario = await this.usersService.findById(usuarioJwt.userId);
+    if (!usuario || !usuario.activo) {
+      throw new UnauthorizedException('Token inválido');
+    }
+
+    const accessToken = this.jwtService.sign(this.construirPayloadToken(usuarioJwt));
 
     return {
       accessToken,
       usuario: this.mapearUsuario(usuario),
+    };
+  }
+
+  private construirRespuestaAuth(usuario: UsuarioDocument): AuthRespuesta {
+    const accessToken = this.jwtService.sign(
+      this.construirPayloadToken({
+        userId: usuario._id.toString(),
+        correo: usuario.correo,
+        nombreUsuario: usuario.nombreUsuario,
+        perfil: usuario.perfil,
+      }),
+    );
+
+    return {
+      accessToken,
+      usuario: this.mapearUsuario(usuario),
+    };
+  }
+
+  private construirPayloadToken(usuario: UsuarioJwt): JwtTokenPayload {
+    return {
+      sub: usuario.userId,
+      correo: usuario.correo,
+      nombreUsuario: usuario.nombreUsuario,
+      perfil: usuario.perfil,
     };
   }
 

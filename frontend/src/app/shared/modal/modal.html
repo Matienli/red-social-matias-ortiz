@@ -17,9 +17,20 @@
       </div>
       <h2 id="modal-title" class="modal__title">{{ modal.data().title }}</h2>
       <p class="modal__message">{{ modal.data().message }}</p>
-      <button class="btn btn-primary modal__btn" type="button" (click)="close()">
-        Entendido
-      </button>
+      @if (modal.data().confirm) {
+        <div class="modal__actions">
+          <button class="btn btn-ghost modal__btn" type="button" (click)="cancel()">
+            {{ modal.data().cancelLabel ?? 'No' }}
+          </button>
+          <button class="btn btn-primary modal__btn" type="button" (click)="confirm()">
+            {{ modal.data().confirmLabel ?? 'Sí, extender' }}
+          </button>
+        </div>
+      } @else {
+        <button class="btn btn-primary modal__btn" type="button" (click)="close()">
+          Entendido
+        </button>
+      }
     </div>
   </div>
 }

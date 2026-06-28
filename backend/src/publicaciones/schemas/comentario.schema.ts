@@ -14,6 +14,9 @@ export class Comentario {
   @Prop({ required: true, trim: true, maxlength: 500 })
   mensaje: string;
 
+  @Prop({ default: false })
+  modificado: boolean;
+
   createdAt?: Date;
   updatedAt?: Date;
 }

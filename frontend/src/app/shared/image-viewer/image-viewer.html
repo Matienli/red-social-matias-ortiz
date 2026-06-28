@@ -1,0 +1,19 @@
+@if (viewer.visible() && viewer.src(); as imagen) {
+  <div
+    class="image-viewer-backdrop"
+    (click)="onBackdropClick($event)"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="viewer.alt() || 'Imagen ampliada'"
+  >
+    <button type="button" class="image-viewer__close" (click)="close()" aria-label="Cerrar imagen">
+      ×
+    </button>
+    <img
+      class="image-viewer__imagen"
+      [src]="imagen"
+      [alt]="viewer.alt()"
+      (click)="$event.stopPropagation()"
+    />
+  </div>
+}

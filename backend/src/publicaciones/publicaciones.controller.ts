@@ -14,19 +14,14 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { PublicacionesService } from './publicaciones.service';
-import { ComentariosService } from './comentarios.service';
 import { ListarPublicacionesQueryDto } from './dto/listar-publicaciones-query.dto';
 import { CrearPublicacionDto } from './dto/crear-publicacion.dto';
-import { CrearComentarioDto } from './dto/crear-comentario.dto';
 import { CurrentUser, UsuarioJwtPayload } from '../auth/decorators/current-user.decorator';
 import { imagenOpcionalPipe } from '../uploads/image-file.pipe';
 
 @Controller('publicaciones')
 export class PublicacionesController {
-  constructor(
-    private readonly publicacionesService: PublicacionesService,
-    private readonly comentariosService: ComentariosService,
-  ) {}
+  constructor(private readonly publicacionesService: PublicacionesService) {}
 
   @Get()
   listar(
@@ -72,20 +67,8 @@ export class PublicacionesController {
     return this.publicacionesService.quitarMeGusta(id, usuario.userId);
   }
 
-  @Get(':id/comentarios')
-  listarComentarios(@Param('id') id: string) {
-    return this.comentariosService.listarPorPublicacion(id);
-  }
-
-  @Post(':id/comentarios')
-  @HttpCode(HttpStatus.CREATED)
-  async crearComentario(
-    @Param('id') id: string,
-    @Body() dto: CrearComentarioDto,
-    @CurrentUser() usuario: UsuarioJwtPayload,
-  ) {
-    await this.comentariosService.crear(id, usuario.userId, dto.mensaje);
-    const comentarios = await this.comentariosService.listarPorPublicacion(id);
-    return comentarios[comentarios.length - 1];
+  @Get(':id')
+  obtenerPorId(@Param('id') id: string, @CurrentUser() usuario: UsuarioJwtPayload) {
+    return this.publicacionesService.obtenerPorId(id, usuario.userId);
   }
 }

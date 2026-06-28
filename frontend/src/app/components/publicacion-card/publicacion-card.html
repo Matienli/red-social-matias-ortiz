@@ -1,66 +1,375 @@
 <article class="publicacion-card">
+
   <header class="publicacion-card__header">
+
     @if (resolveMediaUrl(publicacion().autor.imagenPerfil); as avatar) {
+
       <img class="publicacion-card__avatar" [src]="avatar" [alt]="publicacion().autor.nombre" />
+
     } @else {
+
       <div class="publicacion-card__avatar publicacion-card__avatar--placeholder">
+
         {{ publicacion().autor.nombre.charAt(0) }}{{ publicacion().autor.apellido.charAt(0) }}
+
       </div>
+
     }
+
     <div>
+
       <h2 class="publicacion-card__autor">
+
         {{ publicacion().autor.nombre }} {{ publicacion().autor.apellido }}
+
       </h2>
+
       <p class="publicacion-card__meta">
+
         @{{ publicacion().autor.nombreUsuario }} · {{ formatFecha(publicacion().createdAt) }}
+
       </p>
+
     </div>
+
   </header>
 
+
+
   <div class="publicacion-card__body">
-    <h3>{{ publicacion().titulo }}</h3>
+
+    <h3>
+
+      <a [routerLink]="['/publicaciones', publicacion().id]" class="publicacion-card__titulo-link">
+
+        {{ publicacion().titulo }}
+
+      </a>
+
+    </h3>
+
     <p>{{ publicacion().descripcion }}</p>
+
     @if (resolveMediaUrl(publicacion().imagenUrl); as imagen) {
-      <img class="publicacion-card__imagen" [src]="imagen" [alt]="publicacion().titulo" />
+
+      @if (imagenExpandible()) {
+
+        <button
+
+          type="button"
+
+          class="publicacion-card__imagen-btn"
+
+          (click)="abrirImagen(imagen)"
+
+          [attr.aria-label]="'Ver imagen completa: ' + publicacion().titulo"
+
+        >
+
+          <img class="publicacion-card__imagen" [src]="imagen" [alt]="publicacion().titulo" />
+
+          <span class="publicacion-card__imagen-hint">Ver completa</span>
+
+        </button>
+
+      } @else {
+
+        <img class="publicacion-card__imagen" [src]="imagen" [alt]="publicacion().titulo" />
+
+      }
+
     }
+
   </div>
 
+
+
   <footer class="publicacion-card__footer">
-    <button
-      type="button"
-      class="btn btn-ghost btn-sm publicacion-card__like"
-      [class.publicacion-card__like--active]="publicacion().meGustaPorMi"
-      (click)="cambiarMeGusta()"
-    >
-      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 5.5 5.5 5.5 0 0 1 21.5 12C19 16.5 12 21 12 21Z"
-        />
-      </svg>
-      {{ publicacion().cantidadMeGusta }}
-    </button>
+
+    <div class="publicacion-card__actions">
+
+      <button
+
+        type="button"
+
+        class="btn btn-ghost btn-sm publicacion-card__action publicacion-card__like"
+
+        [class.publicacion-card__like--active]="publicacion().meGustaPorMi"
+
+        (click)="cambiarMeGusta()"
+
+      >
+
+        <svg class="publicacion-card__action-icon" viewBox="0 0 24 24" aria-hidden="true">
+
+          <path
+
+            d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 5.5 5.5 5.5 0 0 1 21.5 12C19 16.5 12 21 12 21Z"
+
+          />
+
+        </svg>
+
+        <span>{{ publicacion().cantidadMeGusta }}</span>
+
+      </button>
+
+
+
+      <button
+
+        type="button"
+
+        class="btn btn-ghost btn-sm publicacion-card__action publicacion-card__comment"
+
+        [class.publicacion-card__comment--active]="comentariosExpandibles() && comentariosExpandidos()"
+
+        [attr.aria-expanded]="comentariosExpandibles() ? comentariosExpandidos() : null"
+
+        (click)="toggleComentarios()"
+
+        aria-label="Comentarios"
+
+      >
+
+        <svg class="publicacion-card__action-icon" viewBox="0 0 24 24" aria-hidden="true">
+
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+
+          <path d="M8 10h8" />
+
+          <path d="M8 14h5" />
+
+        </svg>
+
+        @if (cantidadComentariosDisplay() !== null) {
+
+          <span>{{ cantidadComentariosDisplay() }}</span>
+
+        }
+
+      </button>
+
+    </div>
+
+
 
     @if (puedeEliminar()) {
+
       <button type="button" class="btn btn-ghost btn-sm publicacion-card__delete" (click)="eliminar()">
+
         Eliminar
+
       </button>
+
     }
+
   </footer>
 
-  @if (mostrarComentarios() && publicacion().comentarios?.length) {
-    <section class="publicacion-card__comentarios">
-      <h4>Comentarios</h4>
-      <ul>
-        @for (comentario of publicacion().comentarios; track comentario.id) {
-          <li>
-            <strong>@{{ comentario.autor.nombreUsuario }}</strong>
-            <span>{{ formatFecha(comentario.createdAt) }}</span>
-            <p>{{ comentario.mensaje }}</p>
-          </li>
+
+
+  @if (comentariosExpandibles() && comentariosExpandidos()) {
+
+    <section class="publicacion-card__comentarios-preview">
+
+      @if (cargandoComentariosPreview()) {
+
+        <p class="publicacion-card__preview-estado">Cargando comentarios...</p>
+
+      } @else if (!comentariosPreview().length) {
+
+        <p class="publicacion-card__preview-estado">Sin comentarios todavía. ¡Sé el primero!</p>
+
+      } @else {
+
+        <ul class="publicacion-card__preview-lista">
+
+          @for (comentario of comentariosPreview(); track comentario.id) {
+
+            <li class="publicacion-card__preview-item">
+
+              <div class="publicacion-card__preview-header">
+
+                @if (resolveMediaUrl(comentario.autor.imagenPerfil); as avatar) {
+
+                  <img
+
+                    class="publicacion-card__preview-avatar"
+
+                    [src]="avatar"
+
+                    [alt]="comentario.autor.nombre"
+
+                  />
+
+                } @else {
+
+                  <div class="publicacion-card__preview-avatar publicacion-card__preview-avatar--placeholder">
+
+                    {{ comentario.autor.nombre.charAt(0) }}{{ comentario.autor.apellido.charAt(0) }}
+
+                  </div>
+
+                }
+
+                <div class="publicacion-card__preview-meta">
+                  <strong>@{{ comentario.autor.nombreUsuario }}</strong>
+                  <span>
+                    {{ formatFecha(comentario.createdAt) }}
+                    @if (comentario.modificado) {
+                      · editado
+                    }
+                  </span>
+                </div>
+                @if (esComentarioPropio(comentario) && comentarioEditandoId() !== comentario.id) {
+                  <button
+                    type="button"
+                    class="btn btn-ghost btn-sm publicacion-card__preview-editar"
+                    (click)="iniciarEdicion(comentario)"
+                  >
+                    Editar
+                  </button>
+                }
+              </div>
+
+              @if (comentarioEditandoId() === comentario.id) {
+                <form
+                  class="publicacion-card__preview-editar-form"
+                  [formGroup]="editarComentarioForm"
+                  (ngSubmit)="guardarEdicion(comentario.id)"
+                >
+                  <textarea rows="2" formControlName="mensaje" aria-label="Editar comentario"></textarea>
+                  <div class="publicacion-card__preview-editar-acciones">
+                    <button
+                      type="submit"
+                      class="btn btn-primary btn-sm"
+                      [disabled]="guardandoEdicion() || editarComentarioForm.invalid"
+                    >
+                      {{ guardandoEdicion() ? 'Guardando...' : 'Guardar' }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-ghost btn-sm"
+                      [disabled]="guardandoEdicion()"
+                      (click)="cancelarEdicion()"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </form>
+              } @else {
+                <p>{{ comentario.mensaje }}</p>
+              }
+
+            </li>
+
+          }
+
+        </ul>
+
+      }
+
+
+
+      <form
+
+        class="publicacion-card__preview-form"
+
+        [formGroup]="miniComentarioForm"
+
+        (ngSubmit)="enviarComentarioPreview()"
+
+      >
+
+        <textarea
+
+          rows="2"
+
+          formControlName="mensaje"
+
+          placeholder="Escribí un comentario..."
+
+          aria-label="Nuevo comentario"
+
+        ></textarea>
+
+        <button
+
+          type="submit"
+
+          class="btn btn-primary btn-sm"
+
+          [disabled]="enviandoComentarioPreview() || miniComentarioForm.invalid"
+
+        >
+
+          {{ enviandoComentarioPreview() ? 'Publicando...' : 'Comentar' }}
+
+        </button>
+
+      </form>
+
+
+
+      <a
+
+        [routerLink]="['/publicaciones', publicacion().id]"
+
+        fragment="comentarios"
+
+        class="publicacion-card__ver-todos"
+
+      >
+
+        @if ((totalComentarios() ?? 0) > previewLimite) {
+
+          Ver todos los comentarios ({{ totalComentarios() }})
+
+        } @else {
+
+          Ver conversación completa
+
         }
-      </ul>
+
+      </a>
+
     </section>
-  } @else if (mostrarComentarios()) {
-    <p class="publicacion-card__sin-comentarios">Sin comentarios todavía.</p>
+
   }
+
+
+
+  @if (mostrarComentarios() && publicacion().comentarios?.length) {
+
+    <section class="publicacion-card__comentarios">
+
+      <h4>Comentarios</h4>
+
+      <ul>
+
+        @for (comentario of publicacion().comentarios; track comentario.id) {
+
+          <li>
+
+            <strong>@{{ comentario.autor.nombreUsuario }}</strong>
+
+            <span>{{ formatFecha(comentario.createdAt) }}</span>
+
+            <p>{{ comentario.mensaje }}</p>
+
+          </li>
+
+        }
+
+      </ul>
+
+    </section>
+
+  } @else if (mostrarComentarios()) {
+
+    <p class="publicacion-card__sin-comentarios">Sin comentarios todavía.</p>
+
+  }
+
 </article>
+

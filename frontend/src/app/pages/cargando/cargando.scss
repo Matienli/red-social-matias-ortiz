@@ -1,0 +1,34 @@
+.cargando-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.cargando-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.cargando-page__spinner {
+  width: 56px;
+  height: 56px;
+  border: 4px solid rgba(255, 255, 255, 0.12);
+  border-top-color: var(--color-cyan);
+  border-radius: var(--radius-full);
+  animation: cargando-spin 0.85s linear infinite;
+}
+
+.cargando-page__text {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+}
+
+@keyframes cargando-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

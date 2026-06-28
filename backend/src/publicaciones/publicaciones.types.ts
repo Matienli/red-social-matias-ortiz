@@ -11,7 +11,9 @@ export interface AutorPublicacion {
 export interface ComentarioRespuesta {
   id: string;
   mensaje: string;
+  modificado: boolean;
   createdAt: Date;
+  updatedAt: Date;
   autor: AutorPublicacion;
 }
 
