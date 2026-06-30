@@ -1,0 +1,131 @@
+<div class="page-shell">
+  <app-navbar />
+
+  <main class="page-content dashboard-page">
+    <header class="page-header dashboard-page__header">
+      <div>
+        <p class="dashboard-page__eyebrow">Dashboard</p>
+        <h1>Gestión de usuarios</h1>
+        <p>Listado, alta y bajas lógicas de usuarios.</p>
+      </div>
+      <div class="dashboard-page__actions">
+        <a routerLink="/dashboard/estadisticas" class="btn btn-ghost btn-sm">Ver estadísticas</a>
+        <button type="button" class="btn btn-primary btn-sm" (click)="toggleFormulario()">
+          {{ mostrarFormulario() ? 'Cerrar formulario' : 'Nuevo usuario' }}
+        </button>
+      </div>
+    </header>
+
+    @if (mostrarFormulario()) {
+      <section class="card dashboard-form">
+        <h2>Registrar nuevo usuario</h2>
+        <form class="form-grid" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+          <div class="form-grid form-grid--two">
+            <div class="form-field">
+              <label for="nombre">Nombre</label>
+              <input id="nombre" type="text" formControlName="nombre" [class.invalid]="isInvalid('nombre')" />
+            </div>
+            <div class="form-field">
+              <label for="apellido">Apellido</label>
+              <input id="apellido" type="text" formControlName="apellido" [class.invalid]="isInvalid('apellido')" />
+            </div>
+          </div>
+
+          <div class="form-grid form-grid--two">
+            <div class="form-field">
+              <label for="correo">Correo</label>
+              <input id="correo" type="email" formControlName="correo" [class.invalid]="isInvalid('correo')" />
+            </div>
+            <div class="form-field">
+              <label for="nombreUsuario">Usuario</label>
+              <input id="nombreUsuario" type="text" formControlName="nombreUsuario" [class.invalid]="isInvalid('nombreUsuario')" />
+            </div>
+          </div>
+
+          <div class="form-grid form-grid--two">
+            <div class="form-field">
+              <label for="contrasena">Contraseña</label>
+              <input id="contrasena" type="password" formControlName="contrasena" [class.invalid]="isInvalid('contrasena')" />
+              @if (isInvalid('contrasena')) {
+                <p class="form-error">{{ getPasswordErrorMessage(form.controls.contrasena) }}</p>
+              }
+            </div>
+            <div class="form-field">
+              <label for="fechaNacimiento">Fecha de nacimiento</label>
+              <input id="fechaNacimiento" type="date" formControlName="fechaNacimiento" [class.invalid]="isInvalid('fechaNacimiento')" />
+            </div>
+          </div>
+
+          <div class="form-grid form-grid--two">
+            <div class="form-field">
+              <label for="descripcionBreve">Descripción breve</label>
+              <input id="descripcionBreve" type="text" formControlName="descripcionBreve" [class.invalid]="isInvalid('descripcionBreve')" />
+            </div>
+            <div class="form-field">
+              <label for="perfil">Perfil</label>
+              <select id="perfil" formControlName="perfil">
+                @for (perfil of perfiles; track perfil.value) {
+                  <option [value]="perfil.value">{{ perfil.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" [disabled]="guardando() || form.invalid">
+            {{ guardando() ? 'Guardando...' : 'Crear usuario' }}
+          </button>
+        </form>
+      </section>
+    }
+
+    <section class="card dashboard-table-card">
+      @if (cargando()) {
+        <p class="dashboard-page__estado">Cargando usuarios...</p>
+      } @else if (!usuarios().length) {
+        <p class="dashboard-page__estado">No hay usuarios registrados.</p>
+      } @else {
+        <div class="dashboard-table-wrap">
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th>Perfil</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (usuario of usuarios(); track usuario.id) {
+                <tr [class.dashboard-table__row--inactivo]="!usuario.activo">
+                  <td>
+                    <strong>@{{ usuario.nombreUsuario }}</strong>
+                    <span>{{ usuario.nombre }} {{ usuario.apellido }}</span>
+                  </td>
+                  <td>{{ usuario.correo }}</td>
+                  <td>{{ usuario.perfil }}</td>
+                  <td>
+                    <span class="dashboard-badge" [class.dashboard-badge--activo]="usuario.activo">
+                      {{ usuario.activo ? 'Activo' : 'Deshabilitado' }}
+                    </span>
+                  </td>
+                  <td>
+                    @if (usuario.activo) {
+                      <button type="button" class="btn btn-ghost btn-sm" (click)="deshabilitar(usuario)">
+                        Deshabilitar
+                      </button>
+                    } @else {
+                      <button type="button" class="btn btn-primary btn-sm" (click)="rehabilitar(usuario)">
+                        Rehabilitar
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  </main>
+</div>

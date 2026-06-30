@@ -102,6 +102,12 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
+    if (!usuario.activo) {
+      throw new UnauthorizedException(
+        'No estás autorizado para ingresar. Tu cuenta fue deshabilitada.',
+      );
+    }
+
     return this.construirRespuestaAuth(usuario);
   }
 

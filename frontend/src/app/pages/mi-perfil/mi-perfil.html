@@ -60,8 +60,10 @@
               <app-publicacion-card
                 [publicacion]="publicacion"
                 [usuarioActualId]="user.id"
+                [esAdministrador]="esAdministrador()"
                 [mostrarComentarios]="true"
                 [comentariosExpandibles]="false"
+                (eliminarSolicitado)="onEliminar($event)"
               />
             }
           </div>
