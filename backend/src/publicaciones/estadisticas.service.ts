@@ -79,11 +79,26 @@ export class EstadisticasService {
     query: RangoFechasQueryDto,
   ): Promise<{ total: number; porDia: ComentariosPorDiaItem[] }> {
     const filtroFecha = this.construirFiltroFecha(query, 'createdAt');
+    const comentariosActivos = [
+      { $match: filtroFecha },
+      {
+        $lookup: {
+          from: 'publicaciones',
+          localField: 'publicacionId',
+          foreignField: '_id',
+          as: 'publicacion',
+        },
+      },
+      { $match: { 'publicacion.activa': { $ne: false } } },
+    ];
 
-    const [total, porDia] = await Promise.all([
-      this.comentarioModel.countDocuments(filtroFecha).exec(),
+    const [totalResult, porDia] = await Promise.all([
+      this.comentarioModel.aggregate<{ total: number }>([
+        ...comentariosActivos,
+        { $count: 'total' },
+      ]),
       this.comentarioModel.aggregate<{ _id: string; cantidad: number }>([
-        { $match: filtroFecha },
+        ...comentariosActivos,
         {
           $group: {
             _id: {
@@ -97,7 +112,7 @@ export class EstadisticasService {
     ]);
 
     return {
-      total,
+      total: totalResult[0]?.total ?? 0,
       porDia: porDia.map((item) => ({ fecha: item._id, cantidad: item.cantidad })),
     };
   }
