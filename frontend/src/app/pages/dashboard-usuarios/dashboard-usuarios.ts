@@ -5,6 +5,8 @@ import { Navbar } from '../../shared/navbar/navbar';
 import { UsuariosService } from '../../services/usuarios';
 import { ModalService } from '../../services/modal';
 import { PerfilUsuario, UsuarioListado } from '../../models/user.model';
+import { NombreUsuarioPipe } from '../../shared/pipes/nombre-usuario.pipe';
+import { ResaltarInvalidoDirective } from '../../shared/directives/resaltar-invalido.directive';
 import {
   getPasswordErrorMessage,
   passwordStrengthValidator,
@@ -12,7 +14,7 @@ import {
 
 @Component({
   selector: 'app-dashboard-usuarios',
-  imports: [Navbar, ReactiveFormsModule, RouterLink],
+  imports: [Navbar, ReactiveFormsModule, RouterLink, NombreUsuarioPipe, ResaltarInvalidoDirective],
   templateUrl: './dashboard-usuarios.html',
   styleUrl: './dashboard-usuarios.scss',
 })

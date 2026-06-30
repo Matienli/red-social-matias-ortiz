@@ -25,7 +25,8 @@
             id="nombre"
             type="text"
             formControlName="nombre"
-            [class.invalid]="isInvalid('nombre')"
+            appAutofocus
+            appResaltarInvalido
             autocomplete="given-name"
           />
           @if (isInvalid('nombre')) {
@@ -71,7 +72,7 @@
             type="text"
             formControlName="nombreUsuario"
             placeholder="ej: maria.gomez o maria_gomez"
-            [class.invalid]="isInvalid('nombreUsuario')"
+            appResaltarInvalido
             autocomplete="username"
           />
           @if (isInvalid('nombreUsuario')) {

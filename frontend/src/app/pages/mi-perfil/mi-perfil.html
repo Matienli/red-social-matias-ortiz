@@ -18,12 +18,12 @@
             <img class="profile-card__avatar" [src]="imagenUrl" [alt]="user.nombre" />
           } @else {
             <div class="profile-card__avatar profile-card__avatar--placeholder">
-              {{ user.nombre.charAt(0) }}{{ user.apellido.charAt(0) }}
+              {{ user | iniciales }}
             </div>
           }
           <div>
             <h2>{{ user.nombre }} {{ user.apellido }}</h2>
-            <p class="profile-card__username">@{{ user.nombreUsuario }}</p>
+            <p class="profile-card__username">{{ user.nombreUsuario | nombreUsuario }}</p>
             <span class="profile-card__badge">{{ user.perfil }}</span>
           </div>
         </div>
@@ -35,7 +35,7 @@
           </div>
           <div>
             <dt>Fecha de nacimiento</dt>
-            <dd>{{ formatFecha(user.fechaNacimiento) }}</dd>
+            <dd>{{ user.fechaNacimiento | fechaAR:'fecha' }}</dd>
           </div>
           <div class="full">
             <dt>Descripción</dt>
