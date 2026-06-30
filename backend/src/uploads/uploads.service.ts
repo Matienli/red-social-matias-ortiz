@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { HttpException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 export interface ImagenSubida {
@@ -25,6 +25,9 @@ export class UploadsService {
       };
     } catch (error) {
       console.error('Error al subir imagen:', error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new InternalServerErrorException('Falló la subida de la imagen a Cloudinary');
     }
   }
