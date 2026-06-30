@@ -1,0 +1,53 @@
+<div class="page-shell">
+  <app-navbar />
+
+  <main class="page-content dashboard-page">
+    <header class="page-header dashboard-page__header">
+      <div>
+        <p class="dashboard-page__eyebrow">Dashboard</p>
+        <h1>Estadísticas</h1>
+        <p>Gráficos de actividad en el período seleccionado.</p>
+      </div>
+      <a routerLink="/dashboard/usuarios" class="btn btn-ghost btn-sm">Gestionar usuarios</a>
+    </header>
+
+    <section class="card dashboard-filtros">
+      <form class="dashboard-filtros__form" [formGroup]="filtrosForm" (ngSubmit)="aplicarFiltros()">
+        <div class="form-field">
+          <label for="desde">Desde</label>
+          <input id="desde" type="date" formControlName="desde" />
+        </div>
+        <div class="form-field">
+          <label for="hasta">Hasta</label>
+          <input id="hasta" type="date" formControlName="hasta" />
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="cargando()">
+          {{ cargando() ? 'Cargando...' : 'Aplicar' }}
+        </button>
+      </form>
+    </section>
+
+    <div class="dashboard-charts">
+      <section class="card dashboard-chart-card">
+        <h2>Publicaciones por usuario</h2>
+        <div class="dashboard-chart-card__canvas">
+          <canvas #chartPublicaciones aria-label="Gráfico de publicaciones por usuario"></canvas>
+        </div>
+      </section>
+
+      <section class="card dashboard-chart-card">
+        <h2>Comentarios en el período</h2>
+        <div class="dashboard-chart-card__canvas">
+          <canvas #chartComentarios aria-label="Gráfico de comentarios por día"></canvas>
+        </div>
+      </section>
+
+      <section class="card dashboard-chart-card dashboard-chart-card--wide">
+        <h2>Comentarios por publicación</h2>
+        <div class="dashboard-chart-card__canvas dashboard-chart-card__canvas--tall">
+          <canvas #chartComentariosPub aria-label="Gráfico de comentarios por publicación"></canvas>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
