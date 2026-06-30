@@ -10,6 +10,7 @@ import {
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
+import { forkJoin } from 'rxjs';
 import { Navbar } from '../../shared/navbar/navbar';
 import { EstadisticasService } from '../../services/estadisticas';
 import { ModalService } from '../../services/modal';
@@ -57,33 +58,36 @@ export class DashboardEstadisticas implements AfterViewInit, OnDestroy {
     this.cargando.set(true);
     this.destruirCharts();
 
-    this.estadisticasService.publicacionesPorUsuario(params).subscribe({
+    forkJoin({
+      publicaciones: this.estadisticasService.publicacionesPorUsuario(params),
+      comentarios: this.estadisticasService.comentarios(params),
+      comentariosPorPublicacion: this.estadisticasService.comentariosPorPublicacion(params),
+    }).subscribe({
       next: (respuesta) => {
-        this.renderPublicacionesChart(respuesta.datos);
-        this.cargarComentarios(params);
+        queueMicrotask(() => {
+          this.renderPublicacionesChart(respuesta.publicaciones.datos);
+          this.renderComentariosChart(respuesta.comentarios.porDia, respuesta.comentarios.total);
+          this.renderComentariosPublicacionChart(respuesta.comentariosPorPublicacion.datos);
+          this.cargando.set(false);
+        });
       },
       error: () => this.mostrarError(),
     });
   }
 
-  private cargarComentarios(params: { desde: string; hasta: string }): void {
-    this.estadisticasService.comentarios(params).subscribe({
-      next: (respuesta) => {
-        this.renderComentariosChart(respuesta.porDia, respuesta.total);
-        this.cargarComentariosPorPublicacion(params);
-      },
-      error: () => this.mostrarError(),
-    });
-  }
+  private crearChart(
+    canvas: HTMLCanvasElement | undefined,
+    config: ChartConfiguration,
+  ): Chart | null {
+    if (!canvas) {
+      return null;
+    }
 
-  private cargarComentariosPorPublicacion(params: { desde: string; hasta: string }): void {
-    this.estadisticasService.comentariosPorPublicacion(params).subscribe({
-      next: (respuesta) => {
-        this.renderComentariosPublicacionChart(respuesta.datos);
-        this.cargando.set(false);
-      },
-      error: () => this.mostrarError(),
-    });
+    Chart.getChart(canvas)?.destroy();
+
+    const chart = new Chart(canvas, config);
+    this.charts.push(chart);
+    return chart;
   }
 
   private renderPublicacionesChart(
@@ -118,7 +122,7 @@ export class DashboardEstadisticas implements AfterViewInit, OnDestroy {
       },
     };
 
-    this.charts.push(new Chart(canvas, config));
+    this.crearChart(canvas, config);
   }
 
   private renderComentariosChart(
@@ -156,7 +160,7 @@ export class DashboardEstadisticas implements AfterViewInit, OnDestroy {
       },
     };
 
-    this.charts.push(new Chart(canvas, config));
+    this.crearChart(canvas, config);
   }
 
   private renderComentariosPublicacionChart(
@@ -196,12 +200,23 @@ export class DashboardEstadisticas implements AfterViewInit, OnDestroy {
       },
     };
 
-    this.charts.push(new Chart(canvas, config));
+    this.crearChart(canvas, config);
   }
 
   private destruirCharts(): void {
     this.charts.forEach((chart) => chart.destroy());
     this.charts = [];
+
+    for (const ref of [
+      this.chartPublicaciones(),
+      this.chartComentarios(),
+      this.chartComentariosPub(),
+    ]) {
+      const canvas = ref?.nativeElement;
+      if (canvas) {
+        Chart.getChart(canvas)?.destroy();
+      }
+    }
   }
 
   private mostrarError(): void {
