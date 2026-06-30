@@ -34,6 +34,12 @@ import { Comentario, Publicacion } from '../../models/publicacion.model';
 
 import { resolveMediaUrl } from '../../utils/media-url';
 
+import { FechaArPipe } from '../../shared/pipes/fecha-ar.pipe';
+
+import { InicialesPipe } from '../../shared/pipes/iniciales.pipe';
+
+import { NombreUsuarioPipe } from '../../shared/pipes/nombre-usuario.pipe';
+
 import { finalize } from 'rxjs';
 
 
@@ -46,7 +52,7 @@ const LIMITE_COMENTARIOS = 3;
 
   selector: 'app-publicacion-detalle',
 
-  imports: [Navbar, PublicacionCard, RouterLink, ReactiveFormsModule],
+  imports: [Navbar, PublicacionCard, RouterLink, ReactiveFormsModule, FechaArPipe, InicialesPipe, NombreUsuarioPipe],
 
   templateUrl: './publicacion-detalle.html',
 
@@ -562,26 +568,5 @@ export class PublicacionDetalle implements OnInit, AfterViewInit {
     queueMicrotask(() => this.scrollAlFinal());
     return true;
   }
-
-
-
-  formatFecha(fecha: string): string {
-
-    return new Date(fecha).toLocaleString('es-AR', {
-
-      day: '2-digit',
-
-      month: '2-digit',
-
-      year: 'numeric',
-
-      hour: '2-digit',
-
-      minute: '2-digit',
-
-    });
-
-  }
-
 }
 

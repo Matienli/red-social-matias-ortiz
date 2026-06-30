@@ -38,7 +38,7 @@
             </div>
             <div class="form-field">
               <label for="nombreUsuario">Usuario</label>
-              <input id="nombreUsuario" type="text" formControlName="nombreUsuario" [class.invalid]="isInvalid('nombreUsuario')" />
+              <input id="nombreUsuario" type="text" formControlName="nombreUsuario" appResaltarInvalido />
             </div>
           </div>
 
@@ -99,7 +99,7 @@
               @for (usuario of usuarios(); track usuario.id) {
                 <tr [class.dashboard-table__row--inactivo]="!usuario.activo">
                   <td>
-                    <strong>@{{ usuario.nombreUsuario }}</strong>
+                    <strong>{{ usuario.nombreUsuario | nombreUsuario }}</strong>
                     <span>{{ usuario.nombre }} {{ usuario.apellido }}</span>
                   </td>
                   <td>{{ usuario.correo }}</td>

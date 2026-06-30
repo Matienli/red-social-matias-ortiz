@@ -12,6 +12,8 @@ import { LoadingScreen } from '../../shared/loading-screen/loading-screen';
 import { AuthService } from '../../services/auth';
 import { ModalService } from '../../services/modal';
 import { PerfilUsuario } from '../../models/user.model';
+import { AutofocusDirective } from '../../shared/directives/autofocus.directive';
+import { ResaltarInvalidoDirective } from '../../shared/directives/resaltar-invalido.directive';
 import {
   getPasswordErrorMessage,
   passwordStrengthValidator,
@@ -59,7 +61,7 @@ function fechaNacimientoValidator(control: AbstractControl): ValidationErrors | 
 
 @Component({
   selector: 'app-registro',
-  imports: [ReactiveFormsModule, RouterLink, Navbar, LoadingScreen],
+  imports: [ReactiveFormsModule, RouterLink, Navbar, LoadingScreen, AutofocusDirective, ResaltarInvalidoDirective],
   templateUrl: './registro.html',
   styleUrl: './registro.scss',
 })

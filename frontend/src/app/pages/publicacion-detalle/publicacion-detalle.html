@@ -120,16 +120,16 @@
 
                         <div class="publicacion-detalle-chat__avatar publicacion-detalle-chat__avatar--placeholder">
 
-                          {{ comentario.autor.nombre.charAt(0) }}{{ comentario.autor.apellido.charAt(0) }}
+                          {{ comentario.autor | iniciales }}
 
                         </div>
 
                       }
 
                       <div class="publicacion-detalle-chat__mensaje-meta">
-                        <strong>@{{ comentario.autor.nombreUsuario }}</strong>
+                        <strong>{{ comentario.autor.nombreUsuario | nombreUsuario }}</strong>
                         <span>
-                          {{ formatFecha(comentario.createdAt) }}
+                          {{ comentario.createdAt | fechaAR }}
                           @if (comentario.modificado) {
                             · editado
                           }

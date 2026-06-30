@@ -6,10 +6,13 @@ import { ModalService } from '../../services/modal';
 import { AuthService } from '../../services/auth';
 import { PerfilCompleto } from '../../models/publicacion.model';
 import { resolveMediaUrl } from '../../utils/media-url';
+import { FechaArPipe } from '../../shared/pipes/fecha-ar.pipe';
+import { InicialesPipe } from '../../shared/pipes/iniciales.pipe';
+import { NombreUsuarioPipe } from '../../shared/pipes/nombre-usuario.pipe';
 
 @Component({
   selector: 'app-mi-perfil',
-  imports: [Navbar, PublicacionCard],
+  imports: [Navbar, PublicacionCard, FechaArPipe, InicialesPipe, NombreUsuarioPipe],
   templateUrl: './mi-perfil.html',
   styleUrl: './mi-perfil.scss',
 })
@@ -45,14 +48,6 @@ export class MiPerfil implements OnInit {
         });
       },
     });
-  }
-
-  formatFecha(fecha: string): string {
-    const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(fecha);
-    if (iso) {
-      return `${iso[3]}/${iso[2]}/${iso[1]}`;
-    }
-    return fecha;
   }
 
   onEliminar(publicacionId: string): void {

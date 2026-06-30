@@ -22,24 +22,22 @@
         </svg>
         Mi perfil
       </a>
-      @if (currentUser()?.perfil === 'administrador') {
-        <a routerLink="/dashboard/usuarios" routerLinkActive="active">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
-          Usuarios
-        </a>
-        <a routerLink="/dashboard/estadisticas" routerLinkActive="active">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 3v18h18" />
-            <path d="M7 16l4-6 4 3 5-8" />
-          </svg>
-          Estadísticas
-        </a>
-      }
+      <a routerLink="/dashboard/usuarios" routerLinkActive="active" appSoloAdmin>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+        Usuarios
+      </a>
+      <a routerLink="/dashboard/estadisticas" routerLinkActive="active" appSoloAdmin>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 3v18h18" />
+          <path d="M7 16l4-6 4 3 5-8" />
+        </svg>
+        Estadísticas
+      </a>
       @if (!isAuthenticated()) {
         <a routerLink="/login" routerLinkActive="active">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -69,7 +67,7 @@
             <path d="M5 20c1.5-4 4.5-6 7-6s5.5 2 7 6" />
           </svg>
           <span class="navbar__user-text">
-            <strong>{{ user.nombreUsuario }}</strong>
+            <strong>{{ user.nombreUsuario | nombreUsuario }}</strong>
             <small>{{ user.perfil }}</small>
           </span>
         </span>

@@ -10,7 +10,7 @@
 
       <div class="publicacion-card__avatar publicacion-card__avatar--placeholder">
 
-        {{ publicacion().autor.nombre.charAt(0) }}{{ publicacion().autor.apellido.charAt(0) }}
+        {{ publicacion().autor | iniciales }}
 
       </div>
 
@@ -26,7 +26,7 @@
 
       <p class="publicacion-card__meta">
 
-        @{{ publicacion().autor.nombreUsuario }} · {{ formatFecha(publicacion().createdAt) }}
+        {{ publicacion().autor.nombreUsuario | nombreUsuario }} · {{ publicacion().createdAt | fechaAR }}
 
       </p>
 
@@ -208,16 +208,16 @@
 
                   <div class="publicacion-card__preview-avatar publicacion-card__preview-avatar--placeholder">
 
-                    {{ comentario.autor.nombre.charAt(0) }}{{ comentario.autor.apellido.charAt(0) }}
+                    {{ comentario.autor | iniciales }}
 
                   </div>
 
                 }
 
                 <div class="publicacion-card__preview-meta">
-                  <strong>@{{ comentario.autor.nombreUsuario }}</strong>
+                  <strong>{{ comentario.autor.nombreUsuario | nombreUsuario }}</strong>
                   <span>
-                    {{ formatFecha(comentario.createdAt) }}
+                    {{ comentario.createdAt | fechaAR }}
                     @if (comentario.modificado) {
                       · editado
                     }
@@ -349,9 +349,9 @@
 
           <li>
 
-            <strong>@{{ comentario.autor.nombreUsuario }}</strong>
+            <strong>{{ comentario.autor.nombreUsuario | nombreUsuario }}</strong>
 
-            <span>{{ formatFecha(comentario.createdAt) }}</span>
+            <span>{{ comentario.createdAt | fechaAR }}</span>
 
             <p>{{ comentario.mensaje }}</p>
 

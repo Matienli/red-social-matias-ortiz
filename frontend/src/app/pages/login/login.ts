@@ -5,6 +5,8 @@ import { Navbar } from '../../shared/navbar/navbar';
 import { LoadingScreen } from '../../shared/loading-screen/loading-screen';
 import { AuthService } from '../../services/auth';
 import { ModalService } from '../../services/modal';
+import { AutofocusDirective } from '../../shared/directives/autofocus.directive';
+import { ResaltarInvalidoDirective } from '../../shared/directives/resaltar-invalido.directive';
 import {
   getPasswordErrorMessage,
   passwordStrengthValidator,
@@ -12,7 +14,7 @@ import {
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink, Navbar, LoadingScreen],
+  imports: [ReactiveFormsModule, RouterLink, Navbar, LoadingScreen, AutofocusDirective, ResaltarInvalidoDirective],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })

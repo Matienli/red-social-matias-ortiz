@@ -23,8 +23,9 @@
             id="identificador"
             type="text"
             formControlName="identificador"
+            appAutofocus
+            appResaltarInvalido
             placeholder="ej: maria@mail.com o maria_gomez"
-            [class.invalid]="isInvalid('identificador')"
             autocomplete="username"
           />
           @if (isInvalid('identificador')) {
@@ -39,8 +40,8 @@
               id="contrasena"
               [type]="mostrarContrasena ? 'text' : 'password'"
               formControlName="contrasena"
+              appResaltarInvalido
               placeholder="Mín. 8 caracteres, 1 mayúscula y 1 número"
-              [class.invalid]="isInvalid('contrasena')"
               autocomplete="current-password"
             />
             <button
